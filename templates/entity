@@ -1,0 +1,32 @@
+package ${EntityPackageName};
+
+
+import java.io.Serializable;
+#set($counter = 0)
+#foreach($field in $TableField)
+#if($mapper.getJavaType($field.getType())=="Date" && $counter<1)
+import java.util.Date;
+#set($counter=$counter+1)
+#end
+#end
+
+
+/**
+
+@author Robot
+*/
+public class ${EntityClassName} implements Serializable {
+	private static final long serialVersionUID = 1L;
+#foreach($field in $fields)
+   private $mapper.getJavaType($field.getType()) $nameHandler.underscoreName($field.getName(),$true);
+#end
+
+#foreach($field in $fields)
+   public void set$nameHandler.underscoreName($field.getName(),$false)($mapper.getJavaType($field.getType()) $nameHandler.underscoreName($field.getName(),$true)){
+         this.$nameHandler.underscoreName($field.getName(),$true) = $nameHandler.underscoreName($field.getName(),$true);
+   }
+   public $mapper.getJavaType($field.getType()) get$nameHandler.underscoreName($field.getName(),$false)(){
+      return this.$nameHandler.underscoreName($field.getName(),$true);
+   }
+#end
+}

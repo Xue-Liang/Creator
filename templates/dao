@@ -1,0 +1,10 @@
+pakcage ${DaoPackageName};
+
+
+import java.util.List;
+
+public class ${DaoClassName} {
+
+
+
+}
