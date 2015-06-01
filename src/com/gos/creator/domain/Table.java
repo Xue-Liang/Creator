@@ -17,6 +17,10 @@ public class Table {
     private PrimaryKey primaryKey;
     private Collection<TableField> fields;
 
+    public Table(String name){
+        this.name = name;
+    }
+    
     public String getName() {
         return name;
     }
