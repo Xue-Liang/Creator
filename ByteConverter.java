@@ -1,4 +1,4 @@
-package org.xue.socket.util;
+package org.xue.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
