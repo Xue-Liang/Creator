@@ -8,16 +8,12 @@ package com.gos.creator.service.impl;
 import com.gos.creator.domain.DataBase;
 import com.gos.creator.domain.Table;
 import com.gos.creator.service.MetaDataReader;
-import com.gos.creator.view.Monkey;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
