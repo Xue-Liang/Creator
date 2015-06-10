@@ -13,5 +13,5 @@ import java.sql.Driver;
  * @author Administrator
  */
 public interface MetaDataReader {
-    public DataBase readFromMySql(Driver driver,String host,int port,String dataBaseName,String user,String password);
+    public DataBase readFromMySql(Driver driver,String host,int port,String dataBaseName,String user,String password) throws Exception;
 }
