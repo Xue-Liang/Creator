@@ -7,27 +7,53 @@ package com.gos.creator.domain;
 
 /**
  *
- * @author Administrator
+ * @author XueLiang
  */
 public class TableField {
 
-    private String name;
-    private String dataType;
+    private String tableFieldName;
+    private String entityFieldName;
+    private String entityPropertyName;
+    private String javaDataType;
+    private boolean isNull;
 
-    public String getName() {
-        return name;
+    public String getTableFieldName() {
+        return tableFieldName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTableFieldName(String tableFieldName) {
+        this.tableFieldName = tableFieldName;
     }
 
-    public String getDataType() {
-        return dataType;
+    public String getEntityFieldName() {
+        return entityFieldName;
     }
 
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
+    public void setEntityFieldName(String entityFieldName) {
+        this.entityFieldName = entityFieldName;
     }
 
+    public String getEntityPropertyName() {
+        return entityPropertyName;
+    }
+
+    public void setEntityPropertyName(String entityPropertyName) {
+        this.entityPropertyName = entityPropertyName;
+    }
+
+    public String getJavaDataType() {
+        return javaDataType;
+    }
+
+    public void setJavaDataType(String javaDataType) {
+        this.javaDataType = javaDataType;
+    }
+
+    public void setIsNull(boolean isNull) {
+        this.isNull = isNull;
+    }
+
+    public boolean getIsNull() {
+        return this.isNull;
+    }
 }

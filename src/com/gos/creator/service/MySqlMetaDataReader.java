@@ -6,13 +6,12 @@
 package com.gos.creator.service;
 
 import com.gos.creator.domain.DataBase;
+import java.sql.Driver;
 
 /**
  *
  * @author Administrator
  */
-public interface CreatorService {
-    public boolean createEntities(DataBase dataBase,String dir,String packageName);
-    
-    public boolean createDao(DataBase dataBase,String dir,String packageName);
+public interface MySqlMetaDataReader {
+     DataBase read(Driver driver,String url,String user,String password) throws Exception;
 }

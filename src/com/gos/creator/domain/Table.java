@@ -5,7 +5,8 @@
  */
 package com.gos.creator.domain;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -14,13 +15,14 @@ import java.util.Collection;
 public class Table {
 
     private String name;
+    private String entityClassName;
     private PrimaryKey primaryKey;
-    private Collection<TableField> fields;
+    private List<TableField> fields;
 
-    public Table(String name){
+    public Table(String name) {
         this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -29,11 +31,19 @@ public class Table {
         this.name = name;
     }
 
-    public Collection<TableField> getFields() {
+    public String getEntityClassName() {
+        return entityClassName;
+    }
+
+    public void setEntityClassName(String entityClassName) {
+        this.entityClassName = entityClassName;
+    }
+
+    public List<TableField> getFields() {
         return fields;
     }
 
-    public void setFields(Collection<TableField> fields) {
+    public void setFields(List<TableField> fields) {
         this.fields = fields;
     }
 
@@ -45,4 +55,17 @@ public class Table {
         this.primaryKey = primaryKey;
     }
 
+    public void addPrimaryKey(TableField field) {
+        if (this.primaryKey == null) {
+            this.primaryKey = new PrimaryKey();
+        }
+        this.primaryKey.addKey(field);
+    }
+
+    public void addField(TableField field) {
+        if (this.fields == null) {
+            this.fields = new LinkedList<>();
+        }
+        this.fields.add(field);
+    }
 }

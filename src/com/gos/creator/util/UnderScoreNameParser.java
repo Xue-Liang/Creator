@@ -7,19 +7,9 @@ package com.gos.creator.util;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
-public class TableNameHandler {
-
-    private static TableNameHandler instance = new TableNameHandler();
-
-    private TableNameHandler() {
-
-    }
-
-    public static TableNameHandler getInstance() {
-        return instance;
-    }
+public class UnderScoreNameParser {
 
     /**
      * 下划线名称转换
@@ -28,7 +18,7 @@ public class TableNameHandler {
      * @param firstCharLowerCase 首字母是否小写, true首字母小写，否则首字母大写
      * @return
      */
-    public String underscoreName(String name, boolean firstCharLowerCase) {
+    public static String toCamel(String name, boolean firstCharLowerCase) {
         if (name == null || name.length() < 1) {
             return "";
         }

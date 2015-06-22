@@ -6,20 +6,18 @@
 package com.gos.creator.view;
 
 import com.gos.creator.domain.DataBase;
-import com.gos.creator.service.CreatorService;
-import com.gos.creator.service.MetaDataReader;
-import com.gos.creator.service.impl.CreatorServiceImpl;
-import com.gos.creator.service.impl.MetaDataReaderImpl;
+import com.gos.creator.service.MySqlCreatorService;
+import com.gos.creator.service.MySqlMetaDataReader;
+import com.gos.creator.service.impl.MySqlCreatorServiceImpl;
+import com.gos.creator.service.impl.MySqlMetaDataReaderImpl;
 import java.io.File;
 import java.sql.Driver;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public class Monkey extends javax.swing.JFrame {
 
@@ -44,17 +42,13 @@ public class Monkey extends javax.swing.JFrame {
     private void initComponents() {
 
         panelDataBase = new javax.swing.JPanel();
-        labHost = new javax.swing.JLabel();
-        labPort = new javax.swing.JLabel();
+        labUrl = new javax.swing.JLabel();
         labUser = new javax.swing.JLabel();
         labPassword = new javax.swing.JLabel();
-        txtHost = new javax.swing.JTextField();
-        txtPort = new javax.swing.JTextField();
+        txtUrl = new javax.swing.JTextField();
         txtUser = new javax.swing.JTextField();
         labDriver = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         drivers = new javax.swing.JComboBox();
-        txtDataBase = new javax.swing.JTextField();
         txtPassword = new javax.swing.JTextField();
         panelEntity = new javax.swing.JPanel();
         labEntityPackage = new javax.swing.JLabel();
@@ -78,17 +72,13 @@ public class Monkey extends javax.swing.JFrame {
         panelDataBase.setToolTipText("");
         panelDataBase.setName("DataBase "); // NOI18N
 
-        labHost.setText("Host:");
-
-        labPort.setText("Port:");
+        labUrl.setText("Url:");
 
         labUser.setText("User:");
 
-        labPassword.setText("Password:");
+        labPassword.setText("Pwd:");
 
         labDriver.setText("Driver:");
-
-        jLabel1.setText("DataBase:");
 
         drivers.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "com.mysql.jdbc.Driver" }));
         drivers.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -103,27 +93,18 @@ public class Monkey extends javax.swing.JFrame {
             panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDataBaseLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelDataBaseLayout.createSequentialGroup()
-                        .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labHost)
-                            .addComponent(labPort)
-                            .addComponent(labUser)
-                            .addComponent(labDriver))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                        .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPort, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtHost, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(drivers, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDataBaseLayout.createSequentialGroup()
-                        .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labPassword)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtDataBase, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                            .addComponent(txtPassword))))
+                .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labDriver)
+                    .addComponent(labUrl)
+                    .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(labPassword)
+                        .addComponent(labUser)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(drivers, javax.swing.GroupLayout.Alignment.TRAILING, 0, 212, Short.MAX_VALUE)
+                    .addComponent(txtUrl, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtUser, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtPassword))
                 .addGap(19, 19, 19))
         );
         panelDataBaseLayout.setVerticalGroup(
@@ -132,26 +113,18 @@ public class Monkey extends javax.swing.JFrame {
                 .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labDriver)
                     .addComponent(drivers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labHost)
-                    .addComponent(txtHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5)
-                .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labPort)
-                    .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labUrl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labUser))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labPassword)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDataBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labPassword))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -201,7 +174,7 @@ public class Monkey extends javax.swing.JFrame {
             .addGroup(panelDirectoryLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labDirectory)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(txtDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -261,18 +234,20 @@ public class Monkey extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
-                .addComponent(btnQuit, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panelDirectory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelDataBase, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelEntity, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelDao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(panelDirectory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelDataBase, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelEntity, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelDao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(btnQuit, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -282,7 +257,7 @@ public class Monkey extends javax.swing.JFrame {
                 .addComponent(panelDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(panelDataBase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(panelEntity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(panelDao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,7 +265,7 @@ public class Monkey extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnQuit, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         panelDataBase.getAccessibleContext().setAccessibleName(" DataBase ");
@@ -313,9 +288,7 @@ public class Monkey extends javax.swing.JFrame {
             return;
         }
         String dir = this.txtDirectory.getText();
-        String host = this.txtHost.getText();
-        String port = this.txtPort.getText();
-        String dataBaseName = this.txtDataBase.getText();
+        String url = this.txtUrl.getText();
         String user = this.txtUser.getText();
         String password = this.txtPassword.getText();
         if ((dir = dir.trim()).length() < 1) {
@@ -330,24 +303,14 @@ public class Monkey extends javax.swing.JFrame {
                 return;
             }
         }
-        if ((host = host.trim()).length() < 1) {
-            JOptionPane.showMessageDialog(this, "请填写数据库主机地址.");
-            this.txtHost.requestFocus();
-            return;
-        }
-        if ((port = port.trim()).length() < 1) {
-            JOptionPane.showMessageDialog(this, "请填写数据库端口号.");
-            this.txtPort.requestFocus();
-            return;
-        }
-        if ((dataBaseName = dataBaseName.trim()).length() < 1) {
-            JOptionPane.showMessageDialog(this, "请填写数据库名.");
-            this.txtDataBase.requestFocus();
-            return;
-        }
         if ((user = user.trim()).length() < 1) {
             JOptionPane.showMessageDialog(this, "请填写数据库用户名.");
             this.txtUser.requestFocus();
+            return;
+        }
+        if ((url = url.trim()).length() < 1) {
+            JOptionPane.showMessageDialog(this, "请填写Url.");
+            this.txtUrl.requestFocus();
             return;
         }
         if ((password = password.trim()).length() < 1) {
@@ -356,21 +319,33 @@ public class Monkey extends javax.swing.JFrame {
             return;
         }
 
-        MetaDataReader reader = new MetaDataReaderImpl();
+        MySqlMetaDataReader reader = new MySqlMetaDataReaderImpl();
         try {
-            this.dataBase = reader.readFromMySql(driver, host, Integer.parseInt(port), dataBaseName, user, password);
+            this.dataBase = reader.read(driver, url, user, password);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "读取数据库失败." + e.getMessage());
             return;
         }
-        CreatorService creatorService = new CreatorServiceImpl();
+        MySqlCreatorService creatorService = new MySqlCreatorServiceImpl();
 
         String entityPackageName = this.txtEntityPackage.getText();
-        creatorService.createEntities(dataBase, dir, entityPackageName);
-
+        try {
+            creatorService.createEntities(dataBase, dir, entityPackageName);
+        } catch (Exception e) {
+            StringBuilder trace = new StringBuilder(1024);
+            for (StackTraceElement s : e.getStackTrace()) {
+                trace.append(s.toString()).append("\r\n");
+            }
+            JOptionPane.showMessageDialog(this, "生成实体类失败.[" + e.getMessage() + trace.toString() + "]");
+            return;
+        }
         String daoPackageName = this.txtDaoPackage.getText();
-        creatorService.createDao(dataBase, dir, daoPackageName);
-
+        try {
+            creatorService.createDao(dataBase, dir, daoPackageName);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "生成数据访问类失败.[" + e.getMessage() + "]");
+            return;
+        }
     }//GEN-LAST:event_btnCreateMouseClicked
 
     private void btnQuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnQuitMouseClicked
@@ -422,26 +397,22 @@ public class Monkey extends javax.swing.JFrame {
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnQuit;
     private javax.swing.JComboBox drivers;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labDaoPackage;
     private javax.swing.JLabel labDirectory;
     private javax.swing.JLabel labDriver;
     private javax.swing.JLabel labEntityPackage;
-    private javax.swing.JLabel labHost;
     private javax.swing.JLabel labPassword;
-    private javax.swing.JLabel labPort;
+    private javax.swing.JLabel labUrl;
     private javax.swing.JLabel labUser;
     private javax.swing.JPanel panelDao;
     private javax.swing.JPanel panelDataBase;
     private javax.swing.JPanel panelDirectory;
     private javax.swing.JPanel panelEntity;
     private javax.swing.JTextField txtDaoPackage;
-    private javax.swing.JTextField txtDataBase;
     private javax.swing.JTextField txtDirectory;
     private javax.swing.JTextField txtEntityPackage;
-    private javax.swing.JTextField txtHost;
     private javax.swing.JTextField txtPassword;
-    private javax.swing.JTextField txtPort;
+    private javax.swing.JTextField txtUrl;
     private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
     private JFileChooser fileChooser = null;

@@ -15,7 +15,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public class VelocityEngineUtil {
 
@@ -32,17 +32,11 @@ public class VelocityEngineUtil {
         return engine;
     }
 
-    public static Template getTemplate(File templateFile) {
+    public static Template getTemplate(File templateFile) throws Exception {
         if (templateFile.exists()) {
             if (templateFile.isFile()) {
                 engine.addProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, templateFile.getParent());
-                try {
-                    return engine.getTemplate(templateFile.getName());
-                } catch (ParseErrorException ex) {
-                    Logger.getLogger(VelocityEngineUtil.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (Exception ex) {
-                    Logger.getLogger(VelocityEngineUtil.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                return engine.getTemplate(templateFile.getName());
             }
         }
         return null;

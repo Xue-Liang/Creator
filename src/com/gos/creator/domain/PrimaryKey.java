@@ -5,7 +5,8 @@
  */
 package com.gos.creator.domain;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -13,14 +14,21 @@ import java.util.Collection;
  */
 public class PrimaryKey {
 
-    private Collection<TableField> key;
+    private List<TableField> key;
 
-    public Collection<TableField> getKey() {
+    public List<TableField> getKey() {
         return key;
     }
 
-    public void setKey(Collection<TableField> key) {
+    public void setKey(List<TableField> key) {
         this.key = key;
+    }
+
+    public void addKey(TableField field) {
+        if (this.key == null) {
+            this.key = new LinkedList<>();
+        }
+        this.key.add(field);
     }
 
 }

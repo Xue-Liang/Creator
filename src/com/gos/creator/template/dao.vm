@@ -1,0 +1,40 @@
+package ${package};
+
+import java.util.List;
+
+#if($isWrite==true)
+import org.apache.ibatis.annotations.Param;
+#end
+import ${entityPackageName}.${entityClassName};
+import ${entityPackageName}.${entityClassName}Example;
+import ${entityPackageName}.${entityClassName}Key;
+
+/**
+*@author Robot
+*/
+public interface ${interfaceName}
+{
+
+	public Integer countByExample(${entityClassName}Example entity);
+
+    public List<${entityClassName}> selectByExample(${entityClassName}Example entity);
+
+	public $entityClassName selectByPrimaryKey(${entityClassName}Key key);
+
+	public $entityClassName selectUnDelByPrimaryKey(${entityClassName}Key key);
+
+#if($isWrite==true)
+    public Integer insertSelective(${entityClassName} entity);
+
+	public Integer replaceSelective(${entityClassName} entity);
+ 
+    public Integer deleteByExample(${entityClassName}Example example);
+
+	public Integer deleteByPrimaryKey(${entityClassName}Key key);
+
+    public Integer updateAllByExample(@Param("record") ${entityClassName} entity, @Param("example") ${entityClassName}Example  example);
+
+	public Integer updateByPrimaryKeySelective(${entityClassName} entity);
+#end
+
+}

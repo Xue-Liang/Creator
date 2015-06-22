@@ -5,11 +5,12 @@
  */
 package com.gos.creator.domain;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public class DataBase {
 
@@ -19,7 +20,7 @@ public class DataBase {
     private String user;
     private String password;
     private String driver;
-    private Collection<Table> tables;
+    private List<Table> tables;
 
     public String getName() {
         return name;
@@ -69,12 +70,18 @@ public class DataBase {
         this.driver = driver;
     }
 
-    public Collection<Table> getTables() {
+    public List<Table> getTables() {
         return tables;
     }
 
-    public void setTables(Collection<Table> tables) {
+    public void setTables(List<Table> tables) {
         this.tables = tables;
     }
 
+    public void addTable(Table table  ){
+        if(this.tables == null){
+            this.tables = new LinkedList<Table>();
+        }
+        this.tables.add(table);
+    }
 }
