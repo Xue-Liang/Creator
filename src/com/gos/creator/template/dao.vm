@@ -1,40 +1,33 @@
-package ${package};
+package ${DaoPackageName};
 
 import java.util.List;
-
-#if($isWrite==true)
-import org.apache.ibatis.annotations.Param;
-#end
-import ${entityPackageName}.${entityClassName};
-import ${entityPackageName}.${entityClassName}Example;
-import ${entityPackageName}.${entityClassName}Key;
+import ${EntityPackageName}.${Table.getEntityClassName()};
 
 /**
-*@author Robot
+
+
+@author Robot.Xue
+@date ${Now}
 */
-public interface ${interfaceName}
-{
+#set($counter = 0)
+public class ${Table.getEntityClassName()}Dao{
+    private static final String sql_insert = "insert into ${Table.getName()} (#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end#end)values(#set($counter = 0)#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end?#set($counter=$counter+1)#end#end)";
+    public void insert(${Table.getEntityClassName()}  entity){
+        
+    }
 
-	public Integer countByExample(${entityClassName}Example entity);
+    private static final String sql_update="";
+    public int update(${Table.getEntityClassName()} entity)
 
-    public List<${entityClassName}> selectByExample(${entityClassName}Example entity);
+    }
 
-	public $entityClassName selectByPrimaryKey(${entityClassName}Key key);
+    private static final String sql_delete="";
+    public int delete(){
 
-	public $entityClassName selectUnDelByPrimaryKey(${entityClassName}Key key);
+    }
 
-#if($isWrite==true)
-    public Integer insertSelective(${entityClassName} entity);
+    private static final String sql_get${Table.getEntityClassName()} ="";
+    public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(){
 
-	public Integer replaceSelective(${entityClassName} entity);
- 
-    public Integer deleteByExample(${entityClassName}Example example);
-
-	public Integer deleteByPrimaryKey(${entityClassName}Key key);
-
-    public Integer updateAllByExample(@Param("record") ${entityClassName} entity, @Param("example") ${entityClassName}Example  example);
-
-	public Integer updateByPrimaryKeySelective(${entityClassName} entity);
-#end
-
+    }
 }

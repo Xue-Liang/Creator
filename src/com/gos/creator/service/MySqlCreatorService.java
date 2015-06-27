@@ -14,5 +14,5 @@ import com.gos.creator.domain.DataBase;
 public interface MySqlCreatorService {
     public boolean createEntities(DataBase dataBase,String dir,String packageName) throws Exception;
     
-    public boolean createDao(DataBase dataBase,String dir,String packageName) throws Exception;
+    public boolean createDao(DataBase dataBase,String dir,String entityPackageName,String daoPackageName) throws Exception;
 }

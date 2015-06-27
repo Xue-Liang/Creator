@@ -49,16 +49,17 @@ public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
                                     String entityFieldName = UnderScoreNameParser.toCamel(name, true);
                                     field.setEntityFieldName(entityFieldName);
                                     
-                                    
-                                    String type = fields.getString("Type");
+                                    String type = fields.getString("Type").toLowerCase();
                                     type = MySqlMapper.getInstance().toJavaType(type);
                                     field.setJavaDataType(type);
                                     
-                                    boolean isNull = "YES".equals(fields.getString("Null"));
-                                    boolean isKey = "PRI".equals(fields.getString("Key"));
-
+                                    boolean isNull = "YES".equals(fields.getString("Null").toUpperCase());
                                     field.setIsNull(isNull);
-
+                                    
+                                    Boolean isAutoIncrement ="AUTO_INCREMENT".equals(fields.getString("Extra").toUpperCase());
+                                    field.setIsAutoIncrement(isAutoIncrement);
+                                    
+                                    boolean isKey = "PRI".equals(fields.getString("Key").toUpperCase());
                                     if (isKey) {
                                         table.addPrimaryKey(field);
                                     }

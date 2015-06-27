@@ -341,7 +341,7 @@ public class Monkey extends javax.swing.JFrame {
         }
         String daoPackageName = this.txtDaoPackage.getText();
         try {
-            creatorService.createDao(dataBase, dir, daoPackageName);
+            creatorService.createDao(dataBase, dir, entityPackageName,daoPackageName);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "生成数据访问类失败.[" + e.getMessage() + "]");
             return;

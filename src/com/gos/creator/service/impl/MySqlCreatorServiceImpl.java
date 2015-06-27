@@ -43,7 +43,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
             Context context = new VelocityContext();
             context.put(NormalName.EntityPackageName.getValue(), packageName);
             context.put(NormalName.Table.getValue(), table);
-            context.put(NormalName.Now.getValue(),formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
+            context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
             File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + ".java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 template.merge(context, writer);
@@ -53,8 +53,26 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
     }
 
     @Override
-    public boolean createDao(DataBase dataBase, String dir, String packageName) {
+    public boolean createDao(DataBase dataBase, String dir,String entityPackageName, String daoPackageName) throws Exception {
+        String packageDirectory = dir + "/" + daoPackageName.replaceAll("\\.", "/");
+        File target = new File(packageDirectory);
+        if (!target.exists()) {
+            target.mkdirs();
+        }
+        String here = this.getClass().getResource("../../template/dao.vm").toString().replace("file:", "");
 
+        Template template = VelocityEngineUtil.getTemplate(new File(here));
+        for (Table table : dataBase.getTables()) {
+            Context context = new VelocityContext();
+            context.put(NormalName.EntityPackageName.getValue(),entityPackageName);
+            context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
+            context.put(NormalName.Table.getValue(), table);
+            context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
+            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Dao.java");
+            try (Writer writer = new FileWriter(sourceCodeFile)) {
+                template.merge(context, writer);
+            }
+        }
         return true;
     }
 

@@ -15,7 +15,8 @@ public class TableField {
     private String entityFieldName;
     private String entityPropertyName;
     private String javaDataType;
-    private boolean isNull;
+    private Boolean isNull;
+    private Boolean isAutoIncrement;
 
     public String getTableFieldName() {
         return tableFieldName;
@@ -56,4 +57,13 @@ public class TableField {
     public boolean getIsNull() {
         return this.isNull;
     }
+
+    public Boolean getIsAutoIncrement() {
+        return this.isAutoIncrement;
+    }
+
+    public void setIsAutoIncrement(Boolean isAutoIncrement) {
+        this.isAutoIncrement = isAutoIncrement;
+    }
+    
 }
