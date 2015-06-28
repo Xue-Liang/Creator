@@ -1,8 +1,15 @@
 package ${DaoPackageName};
-
+#set($hasAutoIncrement = false)
+#set($autoIncrement = "")
+#set($counter=0)
+#foreach($field in ${Table.getFields()})
+       #if(${field.getIsAutoIncrement()}==true)
+            #set($hasAutoIncrement=true)
+            #set($autoIncrement=${field.getEntityPropertyName()})
+       #end
+#end
 import java.util.List;
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.annotation.Resource;
@@ -10,8 +17,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
+#if($hasAutoIncrement)
+import java.sql.Statement;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+#end
 import org.springframework.util.CollectionUtils;
 import ${EntityPackageName}.${Table.getEntityClassName()};
 
@@ -30,8 +41,6 @@ public class ${Table.getEntityClassName()}Dao{
 
     private static final String sql_insert = "insert into ${Table.getName()} (#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end#end)values(#set($counter = 0)#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end?#set($counter=$counter+1)#end#end)";
     public void insert(${Table.getEntityClassName()}  entity){
-        #set($hasAutoIncrement = false)
-        #set($autoIncrement = "")
         final Object[] values = new Object[] { 
             #set($counter=0)
             #foreach($field in ${Table.getFields()})
