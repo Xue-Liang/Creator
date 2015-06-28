@@ -36,7 +36,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
         if (!target.exists()) {
             target.mkdirs();
         }
-        String here = this.getClass().getResource("../../template/entity.vm").toString().replace("file:", "");
+        String here = this.getClass().getResource("/com/gos/creator/template/entity.vm").toString().replace("file:", "");
 
         Template template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {

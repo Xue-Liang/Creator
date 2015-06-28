@@ -23,7 +23,7 @@ public class MySqlMapper {
 
     static {
         try {
-            bundle = new PropertyResourceBundle(MySqlMapper.class.getResourceAsStream("./MySqlMapper.properties"));
+            bundle = new PropertyResourceBundle(MySqlMapper.class.getResourceAsStream("MySqlMapper.properties"));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "没有找到" + MySqlMapper.class.getPackage() + ".MySqlMapper.properties");
         }
