@@ -1,7 +1,18 @@
 package ${DaoPackageName};
 
 import java.util.List;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.annotation.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.util.CollectionUtils;
 import ${EntityPackageName}.${Table.getEntityClassName()};
 
 /**
@@ -15,13 +26,13 @@ public class ${Table.getEntityClassName()}Dao{
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    private static final RowMapper<${Table.getEntityClassName()}> mapper = SpringJdbcAssistor.getRowMapper(${Table.getEntityClassName()}.class);
+    private static final RowMapper<${Table.getEntityClassName()}> mapper = new BeanPropertyRowMapper<${Table.getEntityClassName()}>(${Table.getEntityClassName()}.class);
 
     private static final String sql_insert = "insert into ${Table.getName()} (#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end#end)values(#set($counter = 0)#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end?#set($counter=$counter+1)#end#end)";
     public void insert(${Table.getEntityClassName()}  entity){
         #set($hasAutoIncrement = false)
         #set($autoIncrement = "")
-        Object[] values = new Object[] { 
+        final Object[] values = new Object[] { 
             #set($counter=0)
             #foreach($field in ${Table.getFields()})
             #if(${field.getIsAutoIncrement()}==true)
@@ -35,14 +46,14 @@ public class ${Table.getEntityClassName()}Dao{
             #end
         };
         #if($hasAutoIncrement==true)
-        KeyHolder holder = SpringJdbcAssistor.getGeneratedKeyHolder();
+        KeyHolder holder = new GeneratedKeyHolder();
         #end
         PreparedStatementCreator creator = new PreparedStatementCreator() {
 		@Override
 		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 			PreparedStatement ps = con.prepareStatement(sql_insert#if($hasAutoIncrement),Statement.RETURN_GENERATED_KEYS#end);
-			for (int i = 0; i < parameters.length; i++) {
-                                                    ps.setObject(i + 1, parameters[i]);
+			for (int i = 0; i < values.length; i++) {
+                                                    ps.setObject(i + 1, values[i]);
 			}
 			return ps;
 		}
@@ -55,7 +66,7 @@ public class ${Table.getEntityClassName()}Dao{
 
     #set($counter=$counter+1)
     private static final String sql_update="update ${Table.getName()} set #foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}=?#set($counter=$counter+1)#end#end where #set($counter=0) #foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getTableFieldName()}=? #if($counter>0),#end#set($counter=$counter+1)#end";
-    public int update(${Table.getEntityClassName()} entity)
+    public int update(${Table.getEntityClassName()} entity){
         Object[] values = new Object[] { 
             #set($counter=0)
             #foreach($field in ${Table.getFields()})
@@ -68,21 +79,22 @@ public class ${Table.getEntityClassName()}Dao{
             #set($counter=$counter+1)
             #end
             #end
-            #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getTableFieldName()}=? #if($counter>0),#end#set($counter=$counter+1)#end
+            #foreach($field in ${Table.getPrimaryKey().getKey()}),entity.get${field.getEntityPropertyName()}() #set($counter=$counter+1)#end
         };
         return this.jdbcTemplate.update(sql_update,values);
     }
 
-    private static final String sql_delete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getTableFieldName()}=? #if($counter>0),#end#set($counter=$counter+1)#end";
-    public int delete(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getJavaDataType()} ${field.getEntityFieldName()} #if($counter>0),#end#set($counter=$counter+1)#end){
-        return this.jdbcTemplate.update(sql_delete,#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getEntityFieldName()} #if($counter>0),#end#set($counter=$counter+1)#end);
+    private static final String sql_delete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
+    public int delete(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
+        return this.jdbcTemplate.update(sql_delete,#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end);
     }
 
-    private static final String sql_get${Table.getEntityClassName()} ="select * from ${Table.getName()}  where where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getTableFieldName()}=? #if($counter>0),#end#set($counter=$counter+1)#end";
-    public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getJavaDataType()} ${field.getEntityFieldName()} #if($counter>0),#end#set($counter=$counter+1)#end){
+    private static final String sql_get${Table.getEntityClassName()} ="select * from ${Table.getName()}  where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
+    public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
         Object[]values = new Object[] {
-            #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getEntityFieldName()} #if($counter>0),#end#set($counter=$counter+1)#end
+            #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end
         };
-        return this.jdbcTemplate.query(sql_get${Table.getEntityClassName()},values,mapper);
+        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sql_get${Table.getEntityClassName()},values,mapper);
+        return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
     }
 }
