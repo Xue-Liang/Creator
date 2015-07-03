@@ -99,7 +99,7 @@ public class Monkey extends javax.swing.JFrame {
                     .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(labPassword)
                         .addComponent(labUser)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(panelDataBaseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(drivers, javax.swing.GroupLayout.Alignment.TRAILING, 0, 212, Short.MAX_VALUE)
                     .addComponent(txtUrl, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -174,8 +174,8 @@ public class Monkey extends javax.swing.JFrame {
             .addGroup(panelDirectoryLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labDirectory)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(txtDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(txtDirectory)
                 .addContainerGap())
         );
         panelDirectoryLayout.setVerticalGroup(
