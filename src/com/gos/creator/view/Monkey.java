@@ -161,6 +161,11 @@ public class Monkey extends javax.swing.JFrame {
 
         labDirectory.setText("Directory:");
 
+        txtDirectory.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtDirectoryFocusGained(evt);
+            }
+        });
         txtDirectory.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 txtDirectoryMouseClicked(evt);
@@ -273,11 +278,6 @@ public class Monkey extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtDirectoryMouseClicked
-        // TODO add your handling code here:
-        this.initFileChooser();
-    }//GEN-LAST:event_txtDirectoryMouseClicked
-
     private void btnCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateMouseClicked
         // TODO add your handling code here:
         Driver driver;
@@ -329,8 +329,9 @@ public class Monkey extends javax.swing.JFrame {
         MySqlCreatorService creatorService = new MySqlCreatorServiceImpl();
 
         String entityPackageName = this.txtEntityPackage.getText();
+        boolean success = true;
         try {
-            creatorService.createEntities(dataBase, dir, entityPackageName);
+            success &= creatorService.createEntities(dataBase, dir, entityPackageName);
         } catch (Exception e) {
             StringBuilder trace = new StringBuilder(1024);
             for (StackTraceElement s : e.getStackTrace()) {
@@ -341,11 +342,12 @@ public class Monkey extends javax.swing.JFrame {
         }
         String daoPackageName = this.txtDaoPackage.getText();
         try {
-            creatorService.createDao(dataBase, dir, entityPackageName,daoPackageName);
+            success &= creatorService.createDao(dataBase, dir, entityPackageName, daoPackageName);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "生成数据访问类失败.[" + e.getMessage() + "]");
             return;
         }
+        JOptionPane.showMessageDialog(this, "生成代码" + (success ? "成功." : "失败."));
     }//GEN-LAST:event_btnCreateMouseClicked
 
     private void btnQuitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnQuitMouseClicked
@@ -356,6 +358,15 @@ public class Monkey extends javax.swing.JFrame {
     private void driversMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_driversMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_driversMouseClicked
+
+    private void txtDirectoryFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDirectoryFocusGained
+        
+    }//GEN-LAST:event_txtDirectoryFocusGained
+
+    private void txtDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtDirectoryMouseClicked
+        // TODO add your handling code here:
+        this.initFileChooser();
+    }//GEN-LAST:event_txtDirectoryMouseClicked
 
     /**
      * @param args the command line arguments

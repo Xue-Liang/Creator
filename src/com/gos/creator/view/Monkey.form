@@ -270,6 +270,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtDirectory">
           <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtDirectoryFocusGained"/>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtDirectoryMouseClicked"/>
           </Events>
         </Component>
