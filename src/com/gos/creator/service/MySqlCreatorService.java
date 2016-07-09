@@ -15,4 +15,7 @@ public interface MySqlCreatorService {
     public boolean createEntities(DataBase dataBase,String dir,String packageName) throws Exception;
     
     public boolean createDao(DataBase dataBase,String dir,String entityPackageName,String daoPackageName) throws Exception;
+    
+    public boolean createService(DataBase dataBase,String dir,String entityPackageName,String daoPackageName,String servicePackageName) throws Exception; 
+   
 }

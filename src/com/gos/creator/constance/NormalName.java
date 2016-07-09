@@ -11,7 +11,7 @@ package com.gos.creator.constance;
  */
 public enum NormalName {
 
-    Table("Table"), EntityPackageName("EntityPackageName"), DaoPackageName("DaoPackageName"),Now("Now");
+    Table("Table"), EntityPackageName("EntityPackageName"), DaoPackageName("DaoPackageName"),ServicePackageName("ServicePackageName"),Now("Now");
 
     private final String value;
 

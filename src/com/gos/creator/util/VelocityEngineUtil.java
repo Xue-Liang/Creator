@@ -6,11 +6,9 @@
 package com.gos.creator.util;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.runtime.RuntimeConstants;
 
 /**

@@ -76,4 +76,30 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
         return true;
     }
 
+	@Override
+	public boolean createService(DataBase dataBase, String dir, String entityPackageName, String daoPackageName,
+			String servicePackageName) throws Exception {
+		String packageDirectory = dir + "/" + servicePackageName.replaceAll("\\.", "/");
+        File target = new File(packageDirectory);
+        if (!target.exists()) {
+            target.mkdirs();
+        }
+        String here = this.getClass().getResource("../../template/service.vm").toString().replace("file:", "");
+
+        Template template = VelocityEngineUtil.getTemplate(new File(here));
+        for (Table table : dataBase.getTables()) {
+            Context context = new VelocityContext();
+            context.put(NormalName.EntityPackageName.getValue(),entityPackageName);
+            context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
+            context.put(NormalName.ServicePackageName.getValue(),servicePackageName);
+            context.put(NormalName.Table.getValue(), table);
+            context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
+            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Service.java");
+            try (Writer writer = new FileWriter(sourceCodeFile)) {
+                template.merge(context, writer);
+            }
+        }
+        return true;
+	}
+
 }

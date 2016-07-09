@@ -50,7 +50,6 @@ public class MySqlMapper {
                 jdbcType = matcher.group(1).toLowerCase();
             }
         }
-        String type = null;
         return bundle == null ? "" : bundle.getString(jdbcType);
     }
 }
