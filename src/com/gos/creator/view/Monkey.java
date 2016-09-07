@@ -11,6 +11,9 @@ import java.sql.Driver;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.gos.creator.domain.DataBase;
 import com.gos.creator.service.MySqlCreatorService;
 import com.gos.creator.service.MySqlMetaDataReader;
@@ -25,7 +28,7 @@ public class Monkey extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 7910072156826668382L;
 	private DataBase dataBase = null;
-
+	private static Logger logger = LoggerFactory.getLogger(Monkey.class);
     /**
      * Creates new form NewJFrame
      */
@@ -381,7 +384,7 @@ public class Monkey extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Monkey.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        	logger.error(ex.getMessage(), ex);
         }
         //</editor-fold>
         //</editor-fold>
