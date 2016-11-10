@@ -1,0 +1,166 @@
+package ${DaoPackageName};
+package com.gooagoo.dao;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+/**
+
+
+@author Robot.Xue
+@date ${Now}
+*/
+public class Query {
+    protected List<String> fields = null;
+    protected List<String> conditions = null;
+    protected List<Object> values = null;
+    protected List<String> orderBy = null;
+    protected int skip = 0;
+    protected int limit = 10;
+    protected int capcity = 16;
+
+    private Query() {
+
+    }
+
+    public static Query create() {
+        return new Query();
+    }
+
+    public Query include(String... fs) {
+        if (fs == null || fs.length < 1) {
+            return this;
+        }
+        if (this.fields == null) {
+            this.fields = new ArrayList<String>(fs.length);
+        }
+        for (String f : fs) {
+            this.fields.add(f);
+        }
+        return this;
+    }
+
+    public Query and(String field) {
+        if (this.conditions == null) {
+            this.conditions = new ArrayList<String>(8);
+        }
+        conditions.add(" and " + field);
+        this.capcity += 5 + field.length();
+        return this;
+    }
+
+    public Query or(String field) {
+        if (conditions == null) {
+            conditions = new java.util.ArrayList<String>(8);
+        }
+
+        this.capcity += 4 + field.length();
+        return this;
+    }
+
+    public Query eq(Object value) {
+        if (values != null) {
+            values = new java.util.ArrayList<Object>();
+        }
+        this.conditions.add("=?");
+        this.capcity += 3;
+        return this;
+    }
+
+    public Query neq(Object value) {
+        if (values != null) {
+            values = new java.util.ArrayList<Object>();
+        }
+        this.conditions.add("<>?");
+        this.capcity += 3;
+        this.values.add(value);
+        return this;
+    }
+
+    public Query in(Collection<Object> values) {
+        if (values == null) {
+            return this;
+        }
+        if (this.values == null) {
+            this.values = new ArrayList<Object>();
+        }
+        StringBuilder cup = new StringBuilder(values.size() * 2);
+        cup.append(" in (");
+        java.util.Iterator<Object> it = values.iterator();
+        int pointer = 0;
+        while (it.hasNext()) {
+            Object obj = it.next();
+            cup.append("?");
+            pointer++;
+            if (pointer < values.size()) {
+                cup.append(",");
+            }
+            this.values.add(obj);
+        }
+        cup.append(")");
+        this.conditions.add(cup.toString());
+        return this;
+    }
+
+    public Query orderByAsc(String field) {
+        return this.orderBy(field, " asc ");
+    }
+
+    public Query orderByDesc(String field) {
+        return this.orderBy(field, " desc ");
+    }
+
+    private Query orderBy(String field, String order) {
+        if (orderBy == null) {
+            this.orderBy = new ArrayList<String>();
+        }
+        this.orderBy.add(field + order);
+        return this;
+    }
+
+    public Query skip(int skip) {
+        this.skip = skip;
+        return this;
+    }
+
+    public Query limit(int limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder cup = new StringBuilder(this.capcity);
+        cup.append("where 1>0 ");
+
+        int i = 0;
+        if (this.conditions != null && this.conditions.size() > 0) {
+            for (i = 0; i < conditions.size(); i++) {
+                cup.append(this.conditions.get(i));
+            }
+        }
+        if (orderBy != null && orderBy.size() > 0) {
+            cup.append(" order by ");
+            for (i = 0; i < orderBy.size() - 1; i++) {
+                cup.append(orderBy.get(i)).append(",");
+            }
+            if (i == orderBy.size()) {
+                cup.append(orderBy.get(i - 1));
+            }
+        }
+        return cup.toString();
+    }
+
+    public List<Object> getParameters() {
+        return this.values;
+    }
+
+
+    public static void main(String... args) {
+        List<Object> ps = new ArrayList<Object>();
+        ps.add("1");
+        ps.add("2");
+        Query query = Query.create().and("id").in(ps);
+        System.out.println(query);
+    }
+}

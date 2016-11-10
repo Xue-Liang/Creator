@@ -52,7 +52,7 @@ public class Monkey extends javax.swing.JFrame {
         txtUrl = new javax.swing.JTextField();
         txtUser = new javax.swing.JTextField();
         labDriver = new javax.swing.JLabel();
-        drivers = new javax.swing.JComboBox<String>();
+        drivers = new javax.swing.JComboBox<>();
         txtPassword = new javax.swing.JTextField();
         panelEntity = new javax.swing.JPanel();
         labEntityPackage = new javax.swing.JLabel();
@@ -280,7 +280,7 @@ public class Monkey extends javax.swing.JFrame {
         panelDataBase.getAccessibleContext().setAccessibleName(" DataBase ");
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
     private void btnCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateMouseClicked
         // TODO add your handling code here:

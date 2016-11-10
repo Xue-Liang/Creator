@@ -89,12 +89,30 @@ public class ${Table.getEntityClassName()}Dao{
         return this.jdbcTemplate.update(sql_delete,#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end);
     }
 
-    private static final String sql_get${Table.getEntityClassName()} ="select * from ${Table.getName()}  where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
-    public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
+    #set($counter=0)
+    private static final String sql_get${Table.getEntityClassName()} ="select #foreach($field in ${Table.getFields()})#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end from ${Table.getName()}  where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
+    public ${Table.getEntityClassName()} queryFirst(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
         Object[]values = new Object[] {
             #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end
         };
         List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sql_get${Table.getEntityClassName()},values,mapper);
         return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
     }
+
+   public List<${Table.getEntityClassName()}> query(Query query,int index,int size){
+        StringBuilder sqlQuery = new StringBuilder(128);
+        sqlQuery.append("select ");
+         #set($counter=0)
+         #foreach($field in ${Table.getFields()})
+                #if($counter>0)sqlQuery.append(",");#end 
+                sqlQuery.append("${field.getTableFieldName()}")
+                #set($counter=$counter+1)
+         #end
+        sqlQuery.append("where 1=1 ");
+        for(String c : conditions){
+          sqlQuery.append(c);
+        }
+        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sqlQuery,values,mapper);
+        return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
+   }
 }
