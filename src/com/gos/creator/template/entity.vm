@@ -14,8 +14,7 @@ import java.util.Date;
 /**
 
 
-@author Robot.Xue
-@date ${Now}
+@author Robot.Xue on ${Now}
 */
 public class ${Table.getEntityClassName()} implements Serializable {
     private static final long serialVersionUID = 1L;

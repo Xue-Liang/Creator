@@ -1,9 +1,14 @@
-package com.gooagoo.dao;
+package ${DaoPackageName};
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.LinkedList;
+/**
+
+
+@author Robot.Xue on ${Now}
+*/
 public interface SqlBuilder {
 
     public SqlBuilder select(String... fs);
@@ -57,159 +62,196 @@ public interface SqlBuilder {
         protected int skip = 0;
         protected int limit = 0;
         protected int capcity = 16;
+        private static final String comma = ",";
+        private static final String qm = "?";
+        private static final String lb = "(";
+        private static final String rb = ")";
 
         private MySqlBuilder() {
 
+        }
+
+        private MySqlBuilder put(String str) {
+            this.buff.add(str);
+            this.capcity += str.length();
+            return this;
         }
 
         public static MySqlBuilder create() {
             return new MySqlBuilder();
         }
 
+        private static final String del = "delete ";
 
         public SqlBuilder delete() {
-            this.buff.add("delete ");
+            this.put(del);
             return this;
         }
 
+        private static final String update = "update ";
+
         public SqlBuilder update(String table) {
-            this.buff.add("update " + table);
-            return this;
+            return this.put(update).put(table);
         }
 
         public SqlBuilder set(String field, Object value) {
-            this.buff.add(field);
+            this.put(field);
             this.values.add(value);
             return this;
         }
 
+        private static final String from = " from ";
+
         public SqlBuilder from(String table) {
-            this.buff.add(" from " + table);
+            this.put(from + table);
             return this;
         }
 
-        public SqlBuilder where(String field){
-            this.buff.add(" where "+field);
+        private static final String where = " where ";
+
+        public SqlBuilder where(String field) {
+            this.put(where).put(field);
             return this;
         }
+
+        private static final String select = "select ";
 
         public SqlBuilder select(String... fs) {
-            this.buff.add("select ");
+            this.put(select);
             if (fs == null || fs.length < 1) {
                 return this;
             }
             int ix = 0;
             for (String f : fs) {
-                this.buff.add(f);
-                if(ix<fs.length-1){
-                    this.buff.add(",");
+                this.put(f);
+                if (ix < fs.length - 1) {
+                    this.put(comma);
                 }
-                ix ++;
+                ix++;
             }
-            if(ix<fs.length){
-                this.buff.add(fs[ix]);
+            if (ix < fs.length) {
+                this.put(fs[ix]);
             }
             return this;
         }
+
+        private static final String and = " and ";
 
         public SqlBuilder and(String field) {
-            this.buff.add(" and " + field);
-            this.capcity += 5 + field.length();
+            this.put(and).put(field);
             return this;
         }
+
+        private static final String or = " or ";
 
         public SqlBuilder or(String field) {
-            this.capcity += 4 + field.length();
+            this.put(or).put(field);
             return this;
         }
+
+        private static final String eq = "=?";
 
         public SqlBuilder eq(Object value) {
-            this.buff.add("=?");
-            this.capcity += 3;
-            return this;
-        }
-
-        public SqlBuilder neq(Object value) {
-            this.buff.add("<>?");
-            this.capcity += 3;
+            this.put(eq);
             this.values.add(value);
             return this;
         }
 
-        public SqlBuilder gt(Object value) {
-            this.buff.add(">?");
-            this.capcity += 2;
+        private static final String neq = "<>?";
+
+        public SqlBuilder neq(Object value) {
+            this.put(neq);
+            this.values.add(value);
             return this;
         }
 
-        public SqlBuilder gte(Object value) {
-            if (values == null) {
-                values = new java.util.ArrayList<Object>();
-            }
-            this.buff.add(">=?");
-            this.capcity += 4;
+        private static final String gt = ">?";
+
+        public SqlBuilder gt(Object value) {
+            this.put(gt);
             return this;
         }
+
+        private static final String gte = ">=?";
+
+        public SqlBuilder gte(Object value) {
+            this.put(gte);
+            return this;
+        }
+
+        private static final String lt = "<?";
 
         public SqlBuilder lt(Object value) {
             if (values == null) {
                 values = new java.util.ArrayList<Object>();
             }
-            this.buff.add("<?");
-            this.capcity += 2;
+            this.put(lt);
             return this;
         }
+
+        private static final String lte = "<=?";
 
         public SqlBuilder lte(Object value) {
-            this.buff.add("<=?");
-            this.capcity += 3;
+            this.put(lte);
             return this;
         }
 
+        private static final String like = " like ? ";
+
         public SqlBuilder like(String key) {
-            this.buff.add(" like ?");
+            this.put(like);
             this.values.add(key);
             return this;
         }
+
+        private static final String in = " in";
 
         public SqlBuilder in(Collection<Object> vs) {
             if (vs == null) {
                 return this;
             }
-            if (this.values == null) {
-                this.values = new ArrayList<Object>();
-            }
-            StringBuilder cup = new StringBuilder(vs.size() * 2);
-            cup.append(" in (");
+            this.put(in).put(lb);
             java.util.Iterator<Object> it = vs.iterator();
             int pointer = 0;
             while (it.hasNext()) {
                 Object obj = it.next();
-                cup.append("?");
+                this.put(qm);
                 pointer++;
                 if (pointer < vs.size()) {
-                    cup.append(",");
+                    this.put(comma);
                 }
                 this.values.add(obj);
             }
-            cup.append(")");
-            this.buff.add(cup.toString());
+            this.put(rb);
             return this;
         }
 
-        public SqlBuilder orderByAsc(String field) {
-            return this.orderBy(field, " asc ");
+        public SqlBuilder in(SqlBuilder builder) {
+            return this.put(in).put(lb).put(builder.toSql()).put(rb);
         }
 
+        public SqlBuilder exists(SqlBuilder builder) {
+            return this.put(lb).put(builder.toSql()).put(rb);
+        }
+
+        private static final String asc = " asc ";
+
+        public SqlBuilder orderByAsc(String field) {
+            return this.orderBy(field, asc);
+        }
+
+        private static final String desc = " desc ";
+
         public SqlBuilder orderByDesc(String field) {
-            return this.orderBy(field, " desc ");
+            return this.orderBy(field, desc);
         }
 
         public SqlBuilder orderBy(String field, String order) {
             if (orderBy == null) {
                 this.orderBy = new ArrayList<String>();
             }
-            this.orderBy.add(field + order);
+            this.orderBy.add(field);
+            this.orderBy.add(order);
             return this;
         }
 
@@ -253,22 +295,4 @@ public interface SqlBuilder {
         public List<Object> getParameters() {
             return this.values;
         }
-
-
-        public static void main(String... args) {
-            List<Object> ps = new ArrayList<Object>();
-            ps.add("1");
-            ps.add("2");
-            SqlBuilder query = MySqlBuilder.create();
-            query.select("id", "name").from("user").where("id").in(ps);
-            //query.select("id,name").from("user").and("china").eq("123");
-
-            System.out.println("query:" + query.toSql());
-            System.out.print("values:" + query.getParameters().size());
-            for (Object p : query.getParameters()) {
-                System.out.println(p.toString());
-            }
-        }
-    }
-
 }

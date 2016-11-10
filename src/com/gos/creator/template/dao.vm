@@ -29,8 +29,7 @@ import ${EntityPackageName}.${Table.getEntityClassName()};
 /**
 
 
-@author Robot.Xue
-@date ${Now}
+@author Robot.Xue  on ${Now}
 */
 #set($counter = 0)
 public class ${Table.getEntityClassName()}Dao{
