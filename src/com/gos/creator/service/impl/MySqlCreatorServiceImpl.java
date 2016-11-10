@@ -72,9 +72,9 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 template.merge(context, writer);
             }
         }
-        here = this.getClass().getResource("../../template/Query.vm").toString().replace("file:", "");
+        here = this.getClass().getResource("../../template/SqlBuilder.vm").toString().replace("file:", "");
         template = VelocityEngineUtil.getTemplate(new File(here));
-        File sourceCodeFile = new File(packageDirectory + "/" + "Query.java");
+        File sourceCodeFile = new File(packageDirectory + "/" + "SqlBuilder.java");
         try (Writer writer = new FileWriter(sourceCodeFile)) {
             Context context = new VelocityContext();
             context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
