@@ -11,6 +11,8 @@ import java.util.LinkedList;
 */
 public interface SqlBuilder {
 
+    public SqlBuilder insert(String table,String...fs);
+
     public SqlBuilder select(String... fs);
 
     public SqlBuilder delete();
@@ -58,7 +60,6 @@ public interface SqlBuilder {
     public static class MySqlBuilder implements SqlBuilder {
         protected List<String> buff = new LinkedList<String>();
         protected List<Object> values = new LinkedList<>();
-        protected List<String> orderBy = null;
         protected int skip = 0;
         protected int limit = 0;
         protected int capcity = 16;
@@ -66,6 +67,7 @@ public interface SqlBuilder {
         private static final String qm = "?";
         private static final String lb = "(";
         private static final String rb = ")";
+        private static final String space = " ";
 
         private MySqlBuilder() {
 
@@ -79,6 +81,32 @@ public interface SqlBuilder {
 
         public static MySqlBuilder create() {
             return new MySqlBuilder();
+        }
+
+        private static final String insert = "insert into ";
+        @Override
+        public SqlBuilder insert(String table,String[]fs,Collection<Object> values){
+            this.put(insert).put(table).put(lb);
+            if(fs!=null){
+               int i =0;
+               for(;i<fs.length-1;i++){
+                  this.put(fs[i]).put(comma); 
+               }    
+               if(i==fs.length-1){
+                    this.put(fs[i]);
+               }
+               this.put(rb);
+               this.put("values").put(lb);
+               for(;i<fs.length-1;i++){
+                  this.put(qm).put(comma); 
+               }    
+               if(i==fs.length-1){
+                  this.put(qm);
+               }
+               this.put(rb);
+            }
+
+
         }
 
         private static final String del = "delete ";
@@ -103,11 +131,11 @@ public interface SqlBuilder {
         private static final String from = " from ";
 
         public SqlBuilder from(String table) {
-            this.put(from + table);
+            this.put(from);
             return this;
         }
 
-        private static final String where = " where ";
+        private static final String where = "where ";
 
         public SqlBuilder where(String field) {
             this.put(where).put(field);
@@ -231,7 +259,7 @@ public interface SqlBuilder {
         }
 
         public SqlBuilder exists(SqlBuilder builder) {
-            return this.put(lb).put(builder.toSql()).put(rb);
+            return this.put(" exists").put(lb).put(builder.toSql()).put(rb);
         }
 
         private static final String asc = " asc ";
@@ -245,13 +273,9 @@ public interface SqlBuilder {
         public SqlBuilder orderByDesc(String field) {
             return this.orderBy(field, desc);
         }
-
+        private static final String orderBy = " order by ";
         public SqlBuilder orderBy(String field, String order) {
-            if (orderBy == null) {
-                this.orderBy = new ArrayList<String>();
-            }
-            this.orderBy.add(field);
-            this.orderBy.add(order);
+            this.put(orderBy).put(field).put(space).put(order);
             return this;
         }
 
