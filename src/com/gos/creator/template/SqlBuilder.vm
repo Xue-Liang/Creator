@@ -160,8 +160,14 @@ public interface SqlBuilder {
             return this.put(update).put(table);
         }
 
+        private boolean isSet = false;
+        private static final String set =" set ";
         @Override
         public SqlBuilder set(String field, Object value) {
+            if(!isSet){
+               this.put(set);
+               isSet = !isSet;
+            }
             this.put(field);
             this.values.add(value);
             return this;

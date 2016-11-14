@@ -63,23 +63,24 @@ public class ${Table.getEntityClassName()}Dao{
         #end
     }
 
-    #set($counter=0)
-    private static final String sql_update="update ${Table.getName()} set #foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}=?#set($counter=$counter+1)#end#end where #set($counter=0) #foreach($field in ${Table.getPrimaryKey().getKey()}) ${field.getTableFieldName()}=? #if($counter>0),#end#set($counter=$counter+1)#end";
     public int update(${Table.getEntityClassName()} entity){
-        Object[] values = new Object[] { 
-            #set($counter=0)
-            #foreach($field in ${Table.getFields()})
-            #if(${field.getIsAutoIncrement()}==true)
-            #set($hasAutoIncrement=true)
-            #set($autoIncrement=${field.getEntityPropertyName()})
-            #else
-            #if($counter>0),#end
-            entity.get${field.getEntityPropertyName()}()
-            #set($counter=$counter+1)
-            #end
-            #end
-            #foreach($field in ${Table.getPrimaryKey().getKey()}),entity.get${field.getEntityPropertyName()}() #set($counter=$counter+1)#end
-        };
+        SqlBuilder sql = SqlBuilder.create().updte("${Table.getName()}");
+        Object[] values = new Object[] {
+                    #set($counter=0)
+                    #set($hasAutoIncrement=true)
+                    #set($autoIncrement=${field.getEntityPropertyName()})
+                    #foreach($field in ${Table.getFields()})
+                    #if(${field.getIsAutoIncrement()}==true)
+                    #set($hasAutoIncrement=true)
+                    #set($autoIncrement=${field.getEntityPropertyName()})
+                    #else if(entity.get${field.getEntityPropertyName()}()!=null)
+                    #if($counter>0),#end
+                    sql.set("${field.getTableFieldName()}",entity.get${field.getEntityPropertyName()}());
+                    #set($counter=$counter+1)
+                    #end
+                    #end
+                };
+
         return this.jdbcTemplate.update(sql_update,values);
     }
 
