@@ -64,7 +64,7 @@ public class ${Table.getEntityClassName()}Dao{
     }
 
     public int update(${Table.getEntityClassName()} entity){
-        SqlBuilder sql = SqlBuilder.create().updte("${Table.getName()}");
+        SqlBuilder sql = MySqlBuilder.create().update("${Table.getName()}");
         #set($counter=0)
         #set($hasAutoIncrement=false)
         #set($autoIncrement="")
