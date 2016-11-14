@@ -1,0 +1,82 @@
+<html>
+<head>
+    <title>monkey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/jm/jquery.mobile-1.4.5.min.css"/>
+    <script src="/jm/jquery.js"></script>
+    <script src="/jm/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+<div data-role="page">
+    <div data-role="header">
+        <h1>monkey</h1>
+    </div>
+
+    <div data-role="content">
+        <div data-role="fieldcontain">
+            <label for="driver" class="select" style="float:left;margin-top: 10px;">Driver:</label>
+            <select name="driver" id="driver" data-mini="true" data-inline="true">
+                <option value="com.mysql.jdbc.Driver">MySql</option>
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="url">URL:</label>
+            <input data-inline="true" name="url" id="url" placeholder="jdbc:mysql://数据库服务器ip:端口/库名"
+                   value="jdbc:mysql://192.168.3.101:3306/gag_quick"/>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="user">User:</label>
+            <input type="text" data-inline="true" id="user" value="root" placeholder="数据库用户名">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="password">Password:</label>
+            <input type="text" data-inline="true" id="password" value="system@123" placeholder="数据库密码"/>
+        </div>
+        <hr/>
+        <div data-role="fieldcontain">
+            <label for="entity">entity:</label>
+            <input data-inline="true" name="entity" id="entity" value="com.gos.entity" placeholder="实体类包名"/>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="dao">dao:</label>
+            <input type="text" data-inline="true" id="dao" value="com.gos.dao" placeholder="数据访问类包名"/>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="service">service:</label>
+            <input type="text" data-inline="true" id="service" value="com.gos.service" placeholder="业务实现接口包名"/>
+        </div>
+        <hr/>
+        <div data-role="fieldcontain">
+            <label for="dao">directory:</label>
+            <input type="text" data-inline="true" id="directory" value="/home/xue/code"/>
+        </div>
+
+        <input type="button" id="btnGen" data-inline="true" value="Write code"/>
+    </div>
+</div>
+<script type="text/javascript">
+            jQuery("#btnGen").bind("click", {}, function () {
+                var obj = {};
+                obj.driver = jQuery("#driver").val();
+                obj.url = jQuery("#url").val();
+                obj.user = jQuery("#user").val();
+                obj.password = jQuery("#password").val();
+                obj.entity = jQuery("#entity").val();
+                obj.dao = jQuery("#dao").val();
+                obj.service = jQuery("#service").val();
+                obj.directory = jQuery("#directory").val();
+                jQuery.ajax({
+                    url: "/gen",
+                    data: obj,
+                    type: "post",
+                    success: function (resp, status, xhr) {
+                        alert(resp.message);
+                    },
+                    error: function (resp, status, xhr) {
+                        alert("网络错误");
+                    }
+                });
+            });
+</script>
+</body>
+</html>
