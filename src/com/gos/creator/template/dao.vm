@@ -65,23 +65,30 @@ public class ${Table.getEntityClassName()}Dao{
 
     public int update(${Table.getEntityClassName()} entity){
         SqlBuilder sql = SqlBuilder.create().updte("${Table.getName()}");
+        #set($counter=0)
+        #set($hasAutoIncrement=false)
+        #set($autoIncrement="")
         Object[] values = new Object[] {
-                    #set($counter=0)
-                    #set($hasAutoIncrement=true)
-                    #set($autoIncrement=${field.getEntityPropertyName()})
                     #foreach($field in ${Table.getFields()})
-                    #if(${field.getIsAutoIncrement()}==true)
-                    #set($hasAutoIncrement=true)
-                    #set($autoIncrement=${field.getEntityPropertyName()})
-                    #else if(entity.get${field.getEntityPropertyName()}()!=null)
-                    #if($counter>0),#end
-                    sql.set("${field.getTableFieldName()}",entity.get${field.getEntityPropertyName()}());
-                    #set($counter=$counter+1)
-                    #end
-                    #end
-                };
+                         #if(${field.getIsAutoIncrement()})
+                                        #set($hasAutoIncrement=true)
+                                        #set($autoIncrement=${field.getEntityPropertyName()})
+                         #else
+                                        #set($isPrimaryKey=false)
+                                        #foreach($p in ${Table.getPrimaryKey().getKey()})
+                                            #if($p.getTableFieldName()==$field.getTableFieldName())
+                                                #set($isPrimaryKey=true)
+                                            #end
+                                        #end
 
-        return this.jdbcTemplate.update(sql_update,values);
+                                        #if(false==$isPrimaryKey)
+                                            #if($counter>0),#end
+                                            sql.set("${field.getTableFieldName()}",entity.get${field.getEntityPropertyName()}());#set($counter=$counter+1)
+                                        #end
+                         #end
+                    #end
+        };
+        return this.jdbcTemplate.update(sql.toSql(),values);
     }
 
     private static final String sql_delete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
