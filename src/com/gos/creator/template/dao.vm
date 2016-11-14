@@ -25,7 +25,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 #end
 import org.springframework.util.CollectionUtils;
 import ${EntityPackageName}.${Table.getEntityClassName()};
-
+import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
 /**
 
 
@@ -82,7 +82,6 @@ public class ${Table.getEntityClassName()}Dao{
                                         #end
 
                                         #if(false==$isPrimaryKey)
-                                            #if($counter>0),#end
                                             sql.set("${field.getTableFieldName()}",entity.get${field.getEntityPropertyName()}());#set($counter=$counter+1)
                                         #end
                          #end
@@ -106,7 +105,7 @@ public class ${Table.getEntityClassName()}Dao{
     }
 
    public List<${Table.getEntityClassName()}> query(SqlBuilder sqlBuilder){
-        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sqlBuilder,sqlBuilder.getParameters(),mapper);
+        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sqlBuilder.toSql(),sqlBuilder.getParameters().toArray(),mapper);
         return entities;
    }
 }
