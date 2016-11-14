@@ -3,19 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gos.creator.view;
+package com.gos.creator;
 
 import com.gos.creator.domain.DataBase;
 import com.gos.creator.service.MySqlCreatorService;
 import com.gos.creator.service.MySqlMetaDataReader;
 import com.gos.creator.service.impl.MySqlCreatorServiceImpl;
 import com.gos.creator.service.impl.MySqlMetaDataReaderImpl;
-import java.io.File;
-import java.sql.Driver;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.sql.Driver;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
