@@ -10,8 +10,12 @@ import java.util.LinkedList;
 @author Robot.Xue on ${Now}
 */
 public interface SqlBuilder {
-
-    public SqlBuilder insert(String table,String...fs);
+     /**
+          @param table  table name
+          @param fs  field list
+          @param values  sql parameter values
+     */
+    public SqlBuilder insert(String table,String[]fs,Object[] values);
 
     public SqlBuilder select(String... fs);
 
@@ -85,10 +89,11 @@ public interface SqlBuilder {
 
         private static final String insert = "insert into ";
         @Override
-        public SqlBuilder insert(String table,String[]fs,Collection<Object> values){
+        public SqlBuilder insert(String table,String[]fs,Object[] vs){
             this.put(insert).put(table).put(lb);
             if(fs!=null){
-               int i =0;
+               int i = 0;
+
                for(;i<fs.length-1;i++){
                   this.put(fs[i]).put(comma); 
                }    
@@ -96,17 +101,24 @@ public interface SqlBuilder {
                     this.put(fs[i]);
                }
                this.put(rb);
+
                this.put("values").put(lb);
+
+               i =0;
                for(;i<fs.length-1;i++){
-                  this.put(qm).put(comma); 
-               }    
+                  this.put(qm).put(comma);
+               }
                if(i==fs.length-1){
                   this.put(qm);
                }
                this.put(rb);
             }
 
+            for(int i=0;i<vs.length;i++){
+               this.values.add(vs[i]);
+            }
 
+            returnt this;
         }
 
         private static final String del = "delete ";
@@ -296,15 +308,6 @@ public interface SqlBuilder {
             for (String t : this.buff) {
                 cup.append(t);
             }
-            if (orderBy != null && orderBy.size() > 0) {
-                cup.append(" order by ");
-                for (i = 0; i < orderBy.size() - 1; i++) {
-                    cup.append(orderBy.get(i)).append(",");
-                }
-                if (i == orderBy.size()) {
-                    cup.append(orderBy.get(i - 1));
-                }
-            }
             if (limit > 0) {
                 cup.append(" limit ");
                 if (skip >= 0) {
@@ -319,4 +322,5 @@ public interface SqlBuilder {
         public List<Object> getParameters() {
             return this.values;
         }
+    }
 }

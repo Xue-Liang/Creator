@@ -103,8 +103,10 @@ public class ${Table.getEntityClassName()}Dao{
         sqlQuery.append("select ");
          #set($counter=0)
          #foreach($field in ${Table.getFields()})
-                #if($counter>0)sqlQuery.append(",");#end 
-                sqlQuery.append("${field.getTableFieldName()}")
+                #if($counter>0)
+                sqlQuery.append(",");
+                #end
+                sqlQuery.append("${field.getTableFieldName()}");
                 #set($counter=$counter+1)
          #end
         sqlQuery.append("where 1=1 ");
