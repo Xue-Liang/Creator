@@ -118,7 +118,7 @@ public interface SqlBuilder {
                this.values.add(vs[i]);
             }
 
-            returnt this;
+            return this;
         }
 
         private static final String del = "delete ";
