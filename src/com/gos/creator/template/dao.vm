@@ -68,7 +68,7 @@ public class ${Table.getEntityClassName()}Dao{
         #set($counter=0)
         #set($hasAutoIncrement=false)
         #set($autoIncrement="")
-        Object[] values = new Object[] {
+
                     #foreach($field in ${Table.getFields()})
                          #if(${field.getIsAutoIncrement()})
                                         #set($hasAutoIncrement=true)
@@ -87,8 +87,7 @@ public class ${Table.getEntityClassName()}Dao{
                                         #end
                          #end
                     #end
-        };
-        return this.jdbcTemplate.update(sql.toSql(),values);
+        return this.jdbcTemplate.update(sql.toSql(),sql.getParameters().toArray());
     }
 
     private static final String sql_delete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
