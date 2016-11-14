@@ -98,22 +98,8 @@ public class ${Table.getEntityClassName()}Dao{
         return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
     }
 
-   public List<${Table.getEntityClassName()}> query(Query query,int index,int size){
-        StringBuilder sqlQuery = new StringBuilder(128);
-        sqlQuery.append("select ");
-         #set($counter=0)
-         #foreach($field in ${Table.getFields()})
-                #if($counter>0)
-                sqlQuery.append(",");
-                #end
-                sqlQuery.append("${field.getTableFieldName()}");
-                #set($counter=$counter+1)
-         #end
-        sqlQuery.append("where 1=1 ");
-        for(String c : conditions){
-          sqlQuery.append(c);
-        }
-        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sqlQuery,values,mapper);
+   public List<${Table.getEntityClassName()}> query(SqlBuilder sqlBuilder){
+        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sqlBuilder,sqlBuilder.getParameters(),mapper);
         return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
    }
 }

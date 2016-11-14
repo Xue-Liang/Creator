@@ -9,19 +9,22 @@ import java.util.LinkedList;
 
 @author Robot.Xue on ${Now}
 */
+
 public interface SqlBuilder {
-     /**
-          @param table  table name
-          @param fs  field list
-          @param values  sql parameter values
+    /**
+     * @param table  table name
+     * @param fs     field list
+     * @param values sql parameter values
      */
-    public SqlBuilder insert(String table,String[]fs,Object[] values);
+    public SqlBuilder insert(String table, String[] fs, Object[] values);
 
     public SqlBuilder select(String... fs);
 
     public SqlBuilder delete();
 
     public SqlBuilder update(String table);
+
+    public SqlBuilder set(String field,Object value);
 
     public SqlBuilder from(String table);
 
@@ -47,11 +50,31 @@ public interface SqlBuilder {
 
     public SqlBuilder in(Collection<Object> vs);
 
+    public SqlBuilder in(SqlBuilder sqlBuilder);
+    /**
+     * not in creiteria
+     * @param values
+     * @return
+     */
+    public SqlBuilder nin(Collection<Object> values);
+
+    /**
+     * order by <field> asc
+     * @param field
+     * @return
+     */
     public SqlBuilder orderByAsc(String field);
 
+    /**
+     * order by <field> desc
+     * @param field
+     * @return
+     */
     public SqlBuilder orderByDesc(String field);
 
     public SqlBuilder orderBy(String field, String order);
+
+    public SqlBuilder exists(SqlBuilder builder);
 
     public SqlBuilder skip(int skip);
 
@@ -88,34 +111,35 @@ public interface SqlBuilder {
         }
 
         private static final String insert = "insert into ";
+
         @Override
-        public SqlBuilder insert(String table,String[]fs,Object[] vs){
+        public SqlBuilder insert(String table, String[] fs, Object[] vs) {
             this.put(insert).put(table).put(lb);
-            if(fs!=null){
-               int i = 0;
+            if (fs != null) {
+                int i = 0;
 
-               for(;i<fs.length-1;i++){
-                  this.put(fs[i]).put(comma); 
-               }    
-               if(i==fs.length-1){
+                for (; i < fs.length - 1; i++) {
+                    this.put(fs[i]).put(comma);
+                }
+                if (i == fs.length - 1) {
                     this.put(fs[i]);
-               }
-               this.put(rb);
+                }
+                this.put(rb);
 
-               this.put("values").put(lb);
+                this.put("values").put(lb);
 
-               i =0;
-               for(;i<fs.length-1;i++){
-                  this.put(qm).put(comma);
-               }
-               if(i==fs.length-1){
-                  this.put(qm);
-               }
-               this.put(rb);
+                i = 0;
+                for (; i < fs.length - 1; i++) {
+                    this.put(qm).put(comma);
+                }
+                if (i == fs.length - 1) {
+                    this.put(qm);
+                }
+                this.put(rb);
             }
 
-            for(int i=0;i<vs.length;i++){
-               this.values.add(vs[i]);
+            for (int i = 0; i < vs.length; i++) {
+                this.values.add(vs[i]);
             }
 
             return this;
@@ -123,6 +147,7 @@ public interface SqlBuilder {
 
         private static final String del = "delete ";
 
+        @Override
         public SqlBuilder delete() {
             this.put(del);
             return this;
@@ -130,10 +155,12 @@ public interface SqlBuilder {
 
         private static final String update = "update ";
 
+        @Override
         public SqlBuilder update(String table) {
             return this.put(update).put(table);
         }
 
+        @Override
         public SqlBuilder set(String field, Object value) {
             this.put(field);
             this.values.add(value);
@@ -142,13 +169,15 @@ public interface SqlBuilder {
 
         private static final String from = " from ";
 
+        @Override
         public SqlBuilder from(String table) {
             this.put(from);
             return this;
         }
 
-        private static final String where = "where ";
+        private static final String where = " where ";
 
+        @Override
         public SqlBuilder where(String field) {
             this.put(where).put(field);
             return this;
@@ -156,6 +185,7 @@ public interface SqlBuilder {
 
         private static final String select = "select ";
 
+        @Override
         public SqlBuilder select(String... fs) {
             this.put(select);
             if (fs == null || fs.length < 1) {
@@ -177,13 +207,14 @@ public interface SqlBuilder {
 
         private static final String and = " and ";
 
+        @Override
         public SqlBuilder and(String field) {
             this.put(and).put(field);
             return this;
         }
 
         private static final String or = " or ";
-
+        @Override
         public SqlBuilder or(String field) {
             this.put(or).put(field);
             return this;
@@ -191,6 +222,7 @@ public interface SqlBuilder {
 
         private static final String eq = "=?";
 
+        @Override
         public SqlBuilder eq(Object value) {
             this.put(eq);
             this.values.add(value);
@@ -199,6 +231,7 @@ public interface SqlBuilder {
 
         private static final String neq = "<>?";
 
+        @Override
         public SqlBuilder neq(Object value) {
             this.put(neq);
             this.values.add(value);
@@ -207,6 +240,7 @@ public interface SqlBuilder {
 
         private static final String gt = ">?";
 
+        @Override
         public SqlBuilder gt(Object value) {
             this.put(gt);
             return this;
@@ -214,6 +248,7 @@ public interface SqlBuilder {
 
         private static final String gte = ">=?";
 
+        @Override
         public SqlBuilder gte(Object value) {
             this.put(gte);
             return this;
@@ -221,9 +256,10 @@ public interface SqlBuilder {
 
         private static final String lt = "<?";
 
+       @Override
         public SqlBuilder lt(Object value) {
             if (values == null) {
-                values = new java.util.ArrayList<Object>();
+                values = new ArrayList<Object>();
             }
             this.put(lt);
             return this;
@@ -231,6 +267,7 @@ public interface SqlBuilder {
 
         private static final String lte = "<=?";
 
+        @Override
         public SqlBuilder lte(Object value) {
             this.put(lte);
             return this;
@@ -238,6 +275,7 @@ public interface SqlBuilder {
 
         private static final String like = " like ? ";
 
+        @Override
         public SqlBuilder like(String key) {
             this.put(like);
             this.values.add(key);
@@ -246,6 +284,7 @@ public interface SqlBuilder {
 
         private static final String in = " in";
 
+        @Override
         public SqlBuilder in(Collection<Object> vs) {
             if (vs == null) {
                 return this;
@@ -265,40 +304,76 @@ public interface SqlBuilder {
             this.put(rb);
             return this;
         }
-
+        @Override
         public SqlBuilder in(SqlBuilder builder) {
             return this.put(in).put(lb).put(builder.toSql()).put(rb);
         }
 
+        private static final String nin = " not in";
+
+        @Override
+        public SqlBuilder nin(Collection<Object> vs){
+            if (vs == null) {
+                return this;
+            }
+            this.put(nin).put(lb);
+            java.util.Iterator<Object> it = vs.iterator();
+            int pointer = 0;
+            while (it.hasNext()) {
+                Object obj = it.next();
+                this.put(qm);
+                pointer++;
+                if (pointer < vs.size()) {
+                    this.put(comma);
+                }
+                this.values.add(obj);
+            }
+            return this.put(rb);
+        }
+
+        @Override
         public SqlBuilder exists(SqlBuilder builder) {
             return this.put(" exists").put(lb).put(builder.toSql()).put(rb);
         }
 
         private static final String asc = " asc ";
 
+        @Override
         public SqlBuilder orderByAsc(String field) {
             return this.orderBy(field, asc);
         }
 
         private static final String desc = " desc ";
 
+        @Override
         public SqlBuilder orderByDesc(String field) {
             return this.orderBy(field, desc);
         }
+
         private static final String orderBy = " order by ";
+
+        @Override
         public SqlBuilder orderBy(String field, String order) {
             this.put(orderBy).put(field).put(space).put(order);
             return this;
         }
 
+        @Override
         public SqlBuilder skip(int skip) {
             this.skip = skip;
             return this;
         }
 
+        @Override
         public SqlBuilder limit(int limit) {
             this.limit = limit;
             return this;
+        }
+
+
+        @Override
+        public List<Object> getParameters() {
+            return this.values;
         }
 
         @Override
@@ -319,8 +394,9 @@ public interface SqlBuilder {
             return cup.toString();
         }
 
-        public List<Object> getParameters() {
-            return this.values;
+        @Override
+        public String toString(){
+            return this.toSql();
         }
     }
 }
