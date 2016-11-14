@@ -9,6 +9,7 @@ import com.gos.creator.constance.NormalName;
 import com.gos.creator.domain.DataBase;
 import com.gos.creator.domain.Table;
 import com.gos.creator.service.MySqlCreatorService;
+import com.gos.creator.util.UnderScoreNameParser;
 import com.gos.creator.util.VelocityEngineUtil;
 
 import java.io.File;
@@ -52,7 +53,8 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 context.put(NormalName.Table.getValue(), table);
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
-                template.merge(context, writer);
+                if (template != null)
+                    template.merge(context, writer);
             }
         }
         return true;
@@ -78,7 +80,8 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 context.put(NormalName.Table.getValue(), table);
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
-                template.merge(context, writer);
+                if (template != null)
+                    template.merge(context, writer);
             }
         }
         here = this.getClass().getResource("../../template/SqlBuilder.vm").toString().replace("file:", "");
@@ -90,7 +93,8 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
             context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
-            template.merge(context, writer);
+            if (template != null)
+                template.merge(context, writer);
         }
         return true;
     }
@@ -112,13 +116,42 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
             File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Service.java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 Context context = new VelocityContext();
+                context.put("dao", UnderScoreNameParser.toCamel(table.getEntityClassName() + "Dao", true));
                 context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
                 context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
                 context.put(NormalName.ServicePackageName.getValue(), servicePackageName);
                 context.put(NormalName.Table.getValue(), table);
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
-                template.merge(context, writer);
+                if (template != null)
+                    template.merge(context, writer);
+            }
+        }
+
+
+        packageDirectory = (dir + "/" + servicePackageName + ".impl").replaceAll("\\.", "/");
+        target = new File(packageDirectory);
+        if (!target.exists()) {
+            if (!target.mkdirs()) {
+                return false;
+            }
+        }
+        here = this.getClass().getResource("../../template/serviceImpl.vm").toString().replace("file:", "");
+
+        template = VelocityEngineUtil.getTemplate(new File(here));
+        for (Table table : dataBase.getTables()) {
+            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Service.java");
+            try (Writer writer = new FileWriter(sourceCodeFile)) {
+                Context context = new VelocityContext();
+                context.put("dao", UnderScoreNameParser.toCamel(table.getEntityClassName() + "Dao", true));
+                context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
+                context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
+                context.put(NormalName.ServicePackageName.getValue(), servicePackageName);
+                context.put(NormalName.Table.getValue(), table);
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
+                if (template != null)
+                    template.merge(context, writer);
             }
         }
         return true;

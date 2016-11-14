@@ -100,6 +100,6 @@ public class ${Table.getEntityClassName()}Dao{
 
    public List<${Table.getEntityClassName()}> query(SqlBuilder sqlBuilder){
         List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sqlBuilder,sqlBuilder.getParameters(),mapper);
-        return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
+        return entities;
    }
 }

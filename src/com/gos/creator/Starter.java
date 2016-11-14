@@ -24,12 +24,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author xue
  */
 @SpringBootApplication(scanBasePackages = {"com.gos"})
@@ -41,7 +43,7 @@ public class Starter {
 
     @Controller
     public static class IndexController {
-        @RequestMapping(path = "/gen",method=RequestMethod.POST)
+        @RequestMapping(path = "/gen", method = RequestMethod.POST)
         @ResponseBody
         public Object create(
                 @RequestParam(name = "driver", required = false) String driver,
@@ -54,7 +56,7 @@ public class Starter {
                 @RequestParam(name = "directory", required = false) String directory,
                 HttpServletRequest req, HttpServletResponse resp) {
             Map<String, Object> nr = new HashMap<>();
-            Driver dri ;
+            Driver dri;
             try {
                 dri = (Driver) Class.forName(driver).newInstance();
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
@@ -91,7 +93,7 @@ public class Starter {
             }
 
             MySqlMetaDataReader reader = new MySqlMetaDataReaderImpl();
-            DataBase dataBase = null;
+            DataBase dataBase;
             try {
                 dataBase = reader.read(dri, url, user, password);
             } catch (Exception e) {
@@ -107,12 +109,13 @@ public class Starter {
                 success &= creatorService.createDao(dataBase, directory, entity, dao);
                 success &= creatorService.createService(dataBase, directory, entity, dao, service);
             } catch (Exception e) {
-                StringBuilder trace = new StringBuilder(1024);
-                for (StackTraceElement s : e.getStackTrace()) {
-                    trace.append(s.toString()).append("\r\n");
+                try(Writer writer = new StringWriter(1024)) {
+                    e.printStackTrace(new PrintWriter(writer));
+                    nr.put("message", writer.toString());
+                    nr.put("status", "ERR");
+                }catch(Exception ex){
+
                 }
-                nr.put("message", trace);
-                nr.put("status", "ERR");
                 return nr;
             }
             nr.put("message", "生成成功...");
