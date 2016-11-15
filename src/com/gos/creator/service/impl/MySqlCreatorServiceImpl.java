@@ -129,7 +129,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
         }
 
 
-        packageDirectory = (dir + "/" + servicePackageName + ".impl").replaceAll("\\.", "/");
+        packageDirectory = (dir + "/" + servicePackageName + "/impl").replaceAll("\\.", "/");
         target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -140,7 +140,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
         template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
-            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Service.java");
+            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "ServiceImpl.java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 Context context = new VelocityContext();
                 context.put("dao", UnderScoreNameParser.toCamel(table.getEntityClassName() + "Dao", true));

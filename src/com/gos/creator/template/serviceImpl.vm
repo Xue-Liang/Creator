@@ -1,35 +1,38 @@
 package ${ServicePackageName}.impl;
 import java.util.List;
+import javax.annotation.Resource;
 import ${EntityPackageName}.${Table.getEntityClassName()};
 import ${DaoPackageName}.${Table.getEntityClassName()}Dao;
 import ${ServicePackageName}.${Table.getEntityClassName()}Service;
+import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
 /**
 
 
 @author Robot.Xue on ${Now}
 */
 #set($counter = 0)
-public class ${Table.getEntityClassName()}ServiceImpl implements ${Table.getEntityClassName()}Service{
+    @Override
+    public class ${Table.getEntityClassName()}ServiceImpl implements ${Table.getEntityClassName()}Service{
     @Resource
     private $Table.getEntityClassName()Dao ${dao};
-
+    @Override
     public void insert(${Table.getEntityClassName()}  entity){
         this.${dao}.insert(entity);
     }
-
+    @Override
     public int update(${Table.getEntityClassName()} entity){
         return this.${dao}.update(entity);
     }
-
+    @Override
     public int delete(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
         return this.${dao}.delete(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end $field.getEntityFieldName() #set($counter=$counter+1)#end);
     }
-
-    public ${Table.getEntityClassName()} get${$Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
-        return this.${dao}.get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in $Table.getPrimaryKey().getKey()) #if($counter>0),#end $field.getEntityFieldName() #set($counter=$counter+1)#end);
+    @Override
+    public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
+        return this.${dao}.queryFirst(#set($counter=0)#foreach($field in $Table.getPrimaryKey().getKey()) #if($counter>0),#end $field.getEntityFieldName() #set($counter=$counter+1)#end);
     }
-
-    public LisT<${Table.getEntityClassName()}> query(SqlBuilder builder){
+    @Override
+    public List<${Table.getEntityClassName()}> query(SqlBuilder builder){
         this.${dao}.query(builder);
     }
 }

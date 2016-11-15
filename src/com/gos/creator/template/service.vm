@@ -1,7 +1,6 @@
 package ${ServicePackageName};
 import java.util.List;
 import ${EntityPackageName}.${Table.getEntityClassName()};
-import ${DaoPackageName}.${Table.getEntityClassName()}Dao;
 /**
 
 
@@ -18,5 +17,5 @@ public interface ${Table.getEntityClassName()}Service{
 
     public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end);
 
-    public LisT<${Table.getEntityClassName()}> query(SqlBuilder builder);
+    public List<${Table.getEntityClassName()}> query(SqlBuilder builder);
 }
