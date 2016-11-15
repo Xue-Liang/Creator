@@ -5,13 +5,14 @@ import ${EntityPackageName}.${Table.getEntityClassName()};
 import ${DaoPackageName}.${Table.getEntityClassName()}Dao;
 import ${ServicePackageName}.${Table.getEntityClassName()}Service;
 import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
+import org.springframework.stereotype.Service;
 /**
 
 
 @author Robot.Xue on ${Now}
 */
 #set($counter = 0)
-    @Override
+    @Service
     public class ${Table.getEntityClassName()}ServiceImpl implements ${Table.getEntityClassName()}Service{
     @Resource
     private $Table.getEntityClassName()Dao ${dao};

@@ -1,8 +1,11 @@
 package ${DaoPackageName};
+import org.springframework.stereotype.Repository;
+
 /**
 
 @author Robot.Xue  on ${Now}
 */
-public class ${Table.getEntityClassName()}Dao extends ${Table.getEntityClassName()}Dao{
+@Repository
+public class ${Table.getEntityClassName()}Dao extends Abstract${Table.getEntityClassName()}Dao{
 
 }
