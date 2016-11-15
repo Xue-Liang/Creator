@@ -84,12 +84,15 @@ public interface SqlBuilder {
 
     public List<Object> getParameters();
 
+    public void clear();
+
     public static class MySqlBuilder implements SqlBuilder {
         protected List<String> buff = new LinkedList<String>();
         protected List<Object> values = new LinkedList<>();
         protected int skip = 0;
         protected int limit = 0;
-        protected int capacity = 16;
+        protected int capacity = 0;
+        private boolean isSet = false;
         private static final String comma = ",";
         private static final String qm = "?";
         private static final String lb = "(";
@@ -160,15 +163,16 @@ public interface SqlBuilder {
             return this.put(update).put(table);
         }
 
-        private boolean isSet = false;
         private static final String set =" set ";
         @Override
         public SqlBuilder set(String field, Object value) {
             if(!isSet){
                this.put(set);
                isSet = !isSet;
+            }else{
+               this.put(comma);
             }
-            this.put(field);
+            this.put(field).eq(value);
             this.values.add(value);
             return this;
         }
@@ -407,6 +411,16 @@ public interface SqlBuilder {
         @Override
         public String toString(){
             return this.toSql();
+        }
+
+        @Override
+        public void clear(){
+          this.buff.clear();
+          this.values.clear();
+          this.skip = 0;
+          this.limit = 0;
+          this.capacity = 0;
+          this.isSet = false;
         }
     }
 }

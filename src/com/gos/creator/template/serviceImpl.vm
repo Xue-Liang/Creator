@@ -33,6 +33,6 @@ import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
     }
     @Override
     public List<${Table.getEntityClassName()}> query(SqlBuilder builder){
-        this.${dao}.query(builder);
+        return this.${dao}.query(builder);
     }
 }
