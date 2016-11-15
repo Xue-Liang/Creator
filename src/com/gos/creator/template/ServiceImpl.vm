@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 import ${EntityPackageName}.${Table.getEntityClassName()};
 import ${DaoPackageName}.${Table.getEntityClassName()}Dao;
 import ${ServicePackageName}.${Table.getEntityClassName()}Service;
-import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
+import ${DaoPackageName}.SqlBuilder;
 import org.springframework.stereotype.Service;
 /**
 
