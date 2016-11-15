@@ -1,5 +1,6 @@
 package ${ServicePackageName};
 import java.util.List;
+import ${DaoPackageName}.SqlBuilder;
 import ${EntityPackageName}.${Table.getEntityClassName()};
 /**
 

@@ -113,7 +113,7 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
 
     #set($counter=0)
     private static final String sql_get${Table.getEntityClassName()} ="select #foreach($field in ${Table.getFields()})#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end from ${Table.getName()}  where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
-    public ${Table.getEntityClassName()} queryFirst(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
+    public ${Table.getEntityClassName()} query(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
         Object[]values = new Object[] {
             #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end
         };
