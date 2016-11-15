@@ -47,7 +47,7 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
        #set($hasAutoIncrement=true)
        #set($autoIncrement=${field.getEntityPropertyName()})
      #else
-     #if($counter>0),#endentity.get${field.getEntityPropertyName()}()
+     #if($counter>0),#end entity.get${field.getEntityPropertyName()}()
        #set($counter=$counter+1)
      #end
     #end
