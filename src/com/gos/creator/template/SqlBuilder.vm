@@ -89,7 +89,7 @@ public interface SqlBuilder {
         protected List<Object> values = new LinkedList<>();
         protected int skip = 0;
         protected int limit = 0;
-        protected int capcity = 16;
+        protected int capacity = 16;
         private static final String comma = ",";
         private static final String qm = "?";
         private static final String lb = "(";
@@ -102,7 +102,7 @@ public interface SqlBuilder {
 
         private MySqlBuilder put(String str) {
             this.buff.add(str);
-            this.capcity += str.length();
+            this.capacity += str.length();
             return this;
         }
 
@@ -184,8 +184,11 @@ public interface SqlBuilder {
         private static final String where = " where ";
 
         @Override
-        public SqlBuilder where(String field) {
-            this.put(where).put(field);
+        public SqlBuilder where(String exp) {
+            this.put(where);
+            if(exp!=null){
+                this.put(exp);
+            }
             return this;
         }
 
@@ -239,6 +242,7 @@ public interface SqlBuilder {
 
         @Override
         public SqlBuilder neq(Object value) {
+
             this.put(neq);
             this.values.add(value);
             return this;
@@ -384,7 +388,7 @@ public interface SqlBuilder {
 
         @Override
         public String toSql() {
-            StringBuilder cup = new StringBuilder(this.capcity);
+            StringBuilder cup = new StringBuilder(this.capacity);
             int i = 0;
             for (String t : this.buff) {
                 cup.append(t);
