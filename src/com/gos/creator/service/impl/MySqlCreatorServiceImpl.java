@@ -42,7 +42,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 return false;
             }
         }
-        String here = this.getClass().getResource("/com/gos/creator/template/entity.vm").toString().replace("file:", "");
+        String here = this.getClass().getResource("/com/gos/creator/template/Entity.vm").toString().replace("file:", "");
 
         Template template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
@@ -69,8 +69,24 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 return false;
             }
         }
-        String here = this.getClass().getResource("../../template/dao.vm").toString().replace("file:", "");
+        String here = this.getClass().getResource("../../template/AbstractDao.vm").toString().replace("file:", "");
         Template template = VelocityEngineUtil.getTemplate(new File(here));
+        for (Table table : dataBase.getTables()) {
+            File sourceCodeFile = new File(packageDirectory + "/Abstract" + table.getEntityClassName() + "Dao.java");
+            try (Writer writer = new FileWriter(sourceCodeFile)) {
+                Context context = new VelocityContext();
+                context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
+                context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
+                context.put(NormalName.Table.getValue(), table);
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
+                if (template != null)
+                    template.merge(context, writer);
+            }
+        }
+
+        here = this.getClass().getResource("../../template/Dao.vm").toString().replace("file:", "");
+        template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
             File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Dao.java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
@@ -84,6 +100,8 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                     template.merge(context, writer);
             }
         }
+
+
         here = this.getClass().getResource("../../template/SqlBuilder.vm").toString().replace("file:", "");
         template = VelocityEngineUtil.getTemplate(new File(here));
         File sourceCodeFile = new File(packageDirectory + "/" + "SqlBuilder.java");
@@ -109,7 +127,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 return false;
             }
         }
-        String here = this.getClass().getResource("../../template/service.vm").toString().replace("file:", "");
+        String here = this.getClass().getResource("../../template/Service.vm").toString().replace("file:", "");
 
         Template template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
@@ -136,7 +154,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 return false;
             }
         }
-        here = this.getClass().getResource("../../template/serviceImpl.vm").toString().replace("file:", "");
+        here = this.getClass().getResource("../../template/ServiceImpl.vm").toString().replace("file:", "");
 
         template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {

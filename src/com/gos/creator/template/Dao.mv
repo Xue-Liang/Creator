@@ -1,0 +1,8 @@
+package ${DaoPackageName};
+/**
+
+@author Robot.Xue  on ${Now}
+*/
+public class ${Table.getEntityClassName()}Dao extends ${Table.getEntityClassName()}Dao{
+
+}

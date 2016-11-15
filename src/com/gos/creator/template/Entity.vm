@@ -1,0 +1,33 @@
+package ${EntityPackageName};
+
+
+import java.io.Serializable;
+#set($counter = 0)
+#foreach($field in ${Table.getFields()})
+#if(${field.getJavaDataType()}=="Date" && $counter<1)
+import java.util.Date;
+#set($counter=$counter+1)
+#end
+#end
+
+
+/**
+
+
+@author Robot.Xue on ${Now}
+*/
+public class ${Table.getEntityClassName()} implements Serializable {
+    private static final long serialVersionUID = 1L;
+#foreach($field  in  ${Table.getFields()})
+    protected ${field.getJavaDataType()}  ${field.getEntityFieldName()};
+#end
+
+#foreach($field in $Table.getFields())
+    public void set${field.getEntityPropertyName()}(${field.getJavaDataType()} ${field.getEntityFieldName()}){
+        this.${field.getEntityFieldName()} = ${field.getEntityFieldName()};
+    }
+    public ${field.getJavaDataType()} get${field.getEntityPropertyName()} (){
+        return this.${field.getEntityFieldName()};
+    }
+#end
+}
