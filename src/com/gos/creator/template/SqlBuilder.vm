@@ -181,7 +181,7 @@ public interface SqlBuilder {
 
         @Override
         public SqlBuilder from(String table) {
-            this.put(from);
+            this.put(from).put(table);
             return this;
         }
 
