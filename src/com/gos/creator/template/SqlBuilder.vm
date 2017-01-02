@@ -140,7 +140,7 @@ public interface SqlBuilder {
                 }
                 this.put(rb);
 
-                int i = 0;
+                i = 0;
                 for (; i < vs.length; i++) {
                     this.values.add(vs[i]);
                 }
