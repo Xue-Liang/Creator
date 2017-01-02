@@ -139,10 +139,11 @@ public interface SqlBuilder {
                     this.put(qm);
                 }
                 this.put(rb);
-            }
 
-            for (int i = 0; i < vs.length; i++) {
-                this.values.add(vs[i]);
+                int i = 0;
+                for (; i < vs.length; i++) {
+                    this.values.add(vs[i]);
+                }
             }
 
             return this;
