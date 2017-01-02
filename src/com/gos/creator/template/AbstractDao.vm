@@ -56,12 +56,11 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         PreparedStatementCreator creator = new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                try(PreparedStatement ps = con.prepareStatement(sql_insert#if($hasAutoIncrement),Statement.RETURN_GENERATED_KEYS#end)){
-                    for (int i = 0; i < values.length; i++) {
-                        ps.setObject(i + 1, values[i]);
-                    }
-                    return ps;
+                PreparedStatement ps = con.prepareStatement(sql_insert#if($hasAutoIncrement),Statement.RETURN_GENERATED_KEYS#end);
+                for (int i = 0; i < values.length; i++) {
+                    ps.setObject(i + 1, values[i]);
                 }
+                return ps;
 	        }
         };
    #if($hasAutoIncrement==true)
