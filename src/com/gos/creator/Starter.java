@@ -71,9 +71,12 @@ public class Starter {
             } else {
                 File codeDirectory = new File(directory);
                 if (!codeDirectory.exists()) {
-                    nr.put("message", "您填写的代码保存目录不存在.");
-                    nr.put("status", "ERR");
-                    return nr;
+                    boolean success = codeDirectory.mkdirs();
+                    if(!success){
+                        nr.put("message", "代码文件保存目录:"+codeDirectory+"不存在,自动创建目录失败.");
+                        nr.put("status", "ERR");
+                        return nr;
+                    }
                 }
             }
             if ((user = user.trim()).length() < 1) {
