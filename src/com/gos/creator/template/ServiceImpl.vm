@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
     }
     @Override
     public ${Table.getEntityClassName()} get${Table.getEntityClassName()}(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
-        return this.${dao}.query(#set($counter=0)#foreach($field in $Table.getPrimaryKey().getKey()) #if($counter>0),#end $field.getEntityFieldName() #set($counter=$counter+1)#end);
+        return this.${dao}.queryFirst(#set($counter=0)#foreach($field in $Table.getPrimaryKey().getKey()) #if($counter>0),#end $field.getEntityFieldName() #set($counter=$counter+1)#end);
     }
     @Override
     public List<${Table.getEntityClassName()}> query(SqlBuilder builder){
