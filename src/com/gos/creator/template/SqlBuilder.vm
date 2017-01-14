@@ -103,7 +103,8 @@ public interface SqlBuilder {
         }
 
         private MySqlBuilder put(String str) {
-            this.buff.add(str).add(space);
+            this.buff.add(str);
+            this.buff.add(space);
             this.capacity += str.length() + space.length();
             return this;
         }
@@ -168,10 +169,10 @@ public interface SqlBuilder {
         private static final String set ="set";
         @Override
         public SqlBuilder set(String field, Object value) {
-            if(filed==null || (field=field.trim()).length()<1){
-                throw IllegalArgumentException(" field can not be null or empty.");
+            if(field==null || (field=field.trim()).length()<1){
+                throw new IllegalArgumentException(" field can not be null or empty.");
             }
-            if(value.size()<1){
+            if(values.size()<1){
                this.put(set);
             }else{
                this.put(comma);
@@ -245,7 +246,7 @@ public interface SqlBuilder {
         @Override
         public SqlBuilder neq(Object value) {
             this.values.add(value);
-            return this.put(neq);;
+            return this.put(neq);
         }
 
         private static final String gt = ">?";
