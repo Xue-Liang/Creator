@@ -12,18 +12,19 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 
 /**
- *
  * @author Xue Liang
  */
 public class VelocityEngineUtil {
 
     private static final VelocityEngine engine = new VelocityEngine();
 
+    private static final String encoding = "UTF-8";
+
     static {
-        engine.addProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
+        engine.addProperty(RuntimeConstants.ENCODING_DEFAULT, encoding);
+        engine.addProperty(RuntimeConstants.INPUT_ENCODING, encoding);
+        engine.addProperty(RuntimeConstants.OUTPUT_ENCODING, encoding);
         engine.addProperty(RuntimeConstants.MAX_NUMBER_LOOPS, 2 << 10);
-        engine.addProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
-        engine.addProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
     }
 
     public static VelocityEngine getVelocityEngine() {
@@ -34,7 +35,9 @@ public class VelocityEngineUtil {
         if (templateFile.exists()) {
             if (templateFile.isFile()) {
                 engine.addProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, templateFile.getParent());
-                return engine.getTemplate(templateFile.getName());
+                Template template = engine.getTemplate(templateFile.getName(),encoding);
+                template.setEncoding("UTF-8");
+                return template;
             }
         }
         return null;
