@@ -32,6 +32,7 @@ import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
 @author Xue Liang  on ${Now}
 */
 #set($counter = 0)
+
 public abstract class Abstract${Table.getEntityClassName()}Dao{
     @Resource
     private JdbcTemplate jdbcTemplate;
@@ -146,9 +147,8 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
    /**
        自定义的查询,根据sql查询满足条件的记录总数
        @author Xue Liang  on ${Now}
-       */
+   */
    public int queryTotal(SqlBuilder sqlBuilder){
-           this.jdbcTemplate.queryForObject(sqlBuilder.toSql(),sqlBuilder.getParameters().toArray(),mapper);
-           return entities;
-      }
+           return this.jdbcTemplate.queryForObject(sqlBuilder.toSql(),sqlBuilder.getParameters().toArray(),Integer.class);
+   }
 }
