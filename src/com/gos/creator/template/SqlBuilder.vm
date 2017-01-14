@@ -92,7 +92,6 @@ public interface SqlBuilder {
         protected int skip = 0;
         protected int limit = 0;
         protected int capacity = 0;
-        private boolean isSet = false;
         private static final String comma = ",";
         private static final String qm = "?";
         private static final String lb = "(";
@@ -104,8 +103,8 @@ public interface SqlBuilder {
         }
 
         private MySqlBuilder put(String str) {
-            this.buff.add(str);
-            this.capacity += str.length();
+            this.buff.add(str).add(space);
+            this.capacity += str.length() + space.length();
             return this;
         }
 
@@ -113,39 +112,38 @@ public interface SqlBuilder {
             return new MySqlBuilder();
         }
 
-        private static final String insert = "insert into ";
+        private static final String insert = "insert into";
 
         @Override
         public SqlBuilder insert(String table, String[] fs, Object[] vs) {
+            if(fs==null||fs.length<1){
+                throw new IllegalArgumentException("fields name is null or empty,please set field names!");
+            }else if(vs==null||vs.length<1){
+                throw new IllegalArgumentException("values is null or empty,please set values");
+            }else if(fs.length!=vs.length){
+                throw new IllegalArgumentException("fields length must equals the values length");
+            }
             this.put(insert).put(table).put(lb);
             if (fs != null) {
                 int i = 0;
-
                 for (; i < fs.length - 1; i++) {
                     this.put(fs[i]).put(comma);
                 }
                 if (i == fs.length - 1) {
                     this.put(fs[i]);
                 }
-                this.put(rb);
-
-                this.put("values").put(lb);
-
+                this.put(rb).put("values").put(lb);
                 i = 0;
                 for (; i < fs.length - 1; i++) {
                     this.put(qm).put(comma);
+                    this.values.add(vs[i]);
                 }
                 if (i == fs.length - 1) {
                     this.put(qm);
-                }
-                this.put(rb);
-
-                i = 0;
-                for (; i < vs.length; i++) {
                     this.values.add(vs[i]);
                 }
+                this.put(rb);
             }
-
             return this;
         }
 
@@ -157,36 +155,38 @@ public interface SqlBuilder {
             return this;
         }
 
-        private static final String update = "update ";
+        private static final String update = "update";
 
         @Override
         public SqlBuilder update(String table) {
+            if(table==null || (table=table.trim()).length()<1){
+                throw new IllegalArgumentException("table name can not be null or empty,please set the table name!");
+            }
             return this.put(update).put(table);
         }
 
-        private static final String set =" set ";
+        private static final String set ="set";
         @Override
         public SqlBuilder set(String field, Object value) {
-            if(!isSet){
+            if(filed==null || (field=field.trim()).length()<1){
+                throw IllegalArgumentException(" field can not be null or empty.");
+            }
+            if(value.size()<1){
                this.put(set);
-               isSet = !isSet;
             }else{
                this.put(comma);
             }
-            this.put(field).eq(value);
-            this.values.add(value);
-            return this;
+            return this.put(field).eq(value);
         }
 
-        private static final String from = " from ";
+        private static final String from = "from";
 
         @Override
         public SqlBuilder from(String table) {
-            this.put(from).put(table);
-            return this;
+            return this.put(from).put(table);
         }
 
-        private static final String where = " where ";
+        private static final String where = "where";
 
         @Override
         public SqlBuilder where(String exp) {
@@ -197,7 +197,7 @@ public interface SqlBuilder {
             return this;
         }
 
-        private static final String select = "select ";
+        private static final String select = "select";
 
         @Override
         public SqlBuilder select(String... fs) {
@@ -219,54 +219,47 @@ public interface SqlBuilder {
             return this;
         }
 
-        private static final String and = " and ";
+        private static final String and = "and";
 
         @Override
         public SqlBuilder and(String field) {
-            this.put(and).put(field);
-            return this;
+            return this.put(and).put(field);
         }
 
-        private static final String or = " or ";
+        private static final String or = "or";
         @Override
         public SqlBuilder or(String field) {
-            this.put(or).put(field);
-            return this;
+            return this.put(or).put(field);
         }
 
         private static final String eq = "=?";
 
         @Override
         public SqlBuilder eq(Object value) {
-            this.put(eq);
             this.values.add(value);
-            return this;
+            return this.put(eq);
         }
 
         private static final String neq = "<>?";
 
         @Override
         public SqlBuilder neq(Object value) {
-
-            this.put(neq);
             this.values.add(value);
-            return this;
+            return this.put(neq);;
         }
 
         private static final String gt = ">?";
 
         @Override
         public SqlBuilder gt(Object value) {
-            this.put(gt);
-            return this;
+            return this.put(gt);
         }
 
         private static final String gte = ">=?";
 
         @Override
         public SqlBuilder gte(Object value) {
-            this.put(gte);
-            return this;
+            return this.put(gte);
         }
 
         private static final String lt = "<?";
@@ -276,28 +269,25 @@ public interface SqlBuilder {
             if (values == null) {
                 values = new ArrayList<Object>();
             }
-            this.put(lt);
-            return this;
+            return this.put(lt);
         }
 
         private static final String lte = "<=?";
 
         @Override
         public SqlBuilder lte(Object value) {
-            this.put(lte);
-            return this;
+            return this.put(lte);
         }
 
-        private static final String like = " like ? ";
+        private static final String like = "like ?";
 
         @Override
         public SqlBuilder like(String key) {
-            this.put(like);
             this.values.add(key);
-            return this;
+            return this.put(like);
         }
 
-        private static final String in = " in";
+        private static final String in = "in";
 
         @Override
         public SqlBuilder in(Collection<Object> vs) {
@@ -316,15 +306,14 @@ public interface SqlBuilder {
                 }
                 this.values.add(obj);
             }
-            this.put(rb);
-            return this;
+            return this.put(rb);
         }
         @Override
         public SqlBuilder in(SqlBuilder builder) {
             return this.put(in).put(lb).put(builder.toSql()).put(rb);
         }
 
-        private static final String nin = " not in";
+        private static final String nin = "not in";
 
         @Override
         public SqlBuilder nin(Collection<Object> vs){
@@ -351,26 +340,25 @@ public interface SqlBuilder {
             return this.put(" exists").put(lb).put(builder.toSql()).put(rb);
         }
 
-        private static final String asc = " asc ";
+        private static final String asc = "asc";
 
         @Override
         public SqlBuilder orderByAsc(String field) {
             return this.orderBy(field, asc);
         }
 
-        private static final String desc = " desc ";
+        private static final String desc = "desc";
 
         @Override
         public SqlBuilder orderByDesc(String field) {
             return this.orderBy(field, desc);
         }
 
-        private static final String orderBy = " order by ";
+        private static final String orderBy = "order by";
 
         @Override
         public SqlBuilder orderBy(String field, String order) {
-            this.put(orderBy).put(field).put(space).put(order);
-            return this;
+            return this.put(orderBy).put(field).put(order);
         }
 
         @Override
@@ -421,7 +409,6 @@ public interface SqlBuilder {
           this.skip = 0;
           this.limit = 0;
           this.capacity = 0;
-          this.isSet = false;
         }
     }
 }
