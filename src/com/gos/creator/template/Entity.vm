@@ -12,13 +12,16 @@ import java.util.Date;
 
 
 /**
-
+${Table.getDescription()
 
 @author Robot.Xue on ${Now}
 */
 public class ${Table.getEntityClassName()} implements Serializable {
     private static final long serialVersionUID = 1L;
 #foreach($field  in  ${Table.getFields()})
+    /**
+    ${field.getDescription()}
+    */
     protected ${field.getJavaDataType()}  ${field.getEntityFieldName()};
 #end
 

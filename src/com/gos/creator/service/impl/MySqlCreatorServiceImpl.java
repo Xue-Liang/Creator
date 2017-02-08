@@ -35,7 +35,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
     @Override
     public boolean createEntities(DataBase dataBase, String dir, String packageName) throws Exception {
-        String packageDirectory = dir + "/" + packageName.replaceAll("\\.", "/");
+        String packageDirectory = dir + File.separator + packageName.replaceAll("\\.", File.separator);
         File target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -46,7 +46,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
         Template template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
-            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + ".java");
+            File sourceCodeFile = new File(packageDirectory +  File.separator + table.getEntityClassName() + ".java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 Context context = new VelocityContext();
                 context.put(NormalName.EntityPackageName.getValue(), packageName);
@@ -62,7 +62,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
     @Override
     public boolean createDao(DataBase dataBase, String dir, String entityPackageName, String daoPackageName) throws Exception {
-        String packageDirectory = dir + "/" + daoPackageName.replaceAll("\\.", "/");
+        String packageDirectory = dir + File.separator + daoPackageName.replaceAll("\\.",File.separator);
         File target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -88,7 +88,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
         here = this.getClass().getResource("../../template/Dao.vm").toString().replace("file:", "");
         template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
-            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Dao.java");
+            File sourceCodeFile = new File(packageDirectory + File.separator + table.getEntityClassName() + "Dao.java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 Context context = new VelocityContext();
                 context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
@@ -104,7 +104,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
         here = this.getClass().getResource("../../template/SqlBuilder.vm").toString().replace("file:", "");
         template = VelocityEngineUtil.getTemplate(new File(here));
-        File sourceCodeFile = new File(packageDirectory + "/" + "SqlBuilder.java");
+        File sourceCodeFile = new File(packageDirectory + File.separator + "SqlBuilder.java");
         try (Writer writer = new FileWriter(sourceCodeFile)) {
             Context context = new VelocityContext();
             context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
@@ -120,7 +120,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
     @Override
     public boolean createService(DataBase dataBase, String dir, String entityPackageName, String daoPackageName,
                                  String servicePackageName) throws Exception {
-        String packageDirectory = dir + "/" + servicePackageName.replaceAll("\\.", "/");
+        String packageDirectory = dir + File.separator + servicePackageName.replaceAll("\\.", File.separator);
         File target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -131,7 +131,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
         Template template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
-            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "Service.java");
+            File sourceCodeFile = new File(packageDirectory + File.separator + table.getEntityClassName() + "Service.java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 Context context = new VelocityContext();
                 context.put("dao", UnderScoreNameParser.toCamel(table.getEntityClassName() + "Dao", true));
@@ -147,7 +147,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
         }
 
 
-        packageDirectory = (dir + "/" + servicePackageName + "/impl").replaceAll("\\.", "/");
+        packageDirectory = (dir + File.separator + servicePackageName + "/impl").replaceAll("\\.", File.separator);
         target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -158,7 +158,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
         template = VelocityEngineUtil.getTemplate(new File(here));
         for (Table table : dataBase.getTables()) {
-            File sourceCodeFile = new File(packageDirectory + "/" + table.getEntityClassName() + "ServiceImpl.java");
+            File sourceCodeFile = new File(packageDirectory + File.separator + table.getEntityClassName() + "ServiceImpl.java");
             try (Writer writer = new FileWriter(sourceCodeFile)) {
                 Context context = new VelocityContext();
                 context.put("dao", UnderScoreNameParser.toCamel(table.getEntityClassName() + "Dao", true));

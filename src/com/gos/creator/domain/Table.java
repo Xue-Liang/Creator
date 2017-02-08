@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
  * @author Administrator
  */
 public class Table {
@@ -18,6 +17,7 @@ public class Table {
     private String entityClassName;
     private PrimaryKey primaryKey;
     private List<TableField> fields;
+    private String description;
 
     public Table(String name) {
         this.name = name;
@@ -67,5 +67,13 @@ public class Table {
             this.fields = new LinkedList<>();
         }
         this.fields.add(field);
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 }

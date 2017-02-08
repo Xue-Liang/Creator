@@ -6,7 +6,6 @@
 package com.gos.creator.domain;
 
 /**
- *
  * @author XueLiang
  */
 public class TableField {
@@ -17,6 +16,7 @@ public class TableField {
     private String javaDataType;
     private Boolean isNull;
     private Boolean isAutoIncrement;
+    private String description;
 
     public String getTableFieldName() {
         return tableFieldName;
@@ -65,5 +65,12 @@ public class TableField {
     public void setIsAutoIncrement(Boolean isAutoIncrement) {
         this.isAutoIncrement = isAutoIncrement;
     }
-    
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
 }

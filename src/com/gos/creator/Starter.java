@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
