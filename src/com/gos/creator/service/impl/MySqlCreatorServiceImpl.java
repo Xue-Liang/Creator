@@ -35,7 +35,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
     @Override
     public boolean createEntities(DataBase dataBase, String dir, String packageName) throws Exception {
-        String packageDirectory = dir + File.separator + packageName.replaceAll("\\.", File.separator);
+        String packageDirectory = dir + File.separator + packageName.replace(".", File.separator);
         File target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -62,7 +62,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
 
     @Override
     public boolean createDao(DataBase dataBase, String dir, String entityPackageName, String daoPackageName) throws Exception {
-        String packageDirectory = dir + File.separator + daoPackageName.replaceAll("\\.",File.separator);
+        String packageDirectory = dir + File.separator + daoPackageName.replace(".",File.separator);
         File target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -120,7 +120,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
     @Override
     public boolean createService(DataBase dataBase, String dir, String entityPackageName, String daoPackageName,
                                  String servicePackageName) throws Exception {
-        String packageDirectory = dir + File.separator + servicePackageName.replaceAll("\\.", File.separator);
+        String packageDirectory = dir + File.separator + servicePackageName.replace(".", File.separator);
         File target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
@@ -147,7 +147,7 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
         }
 
 
-        packageDirectory = (dir + File.separator + servicePackageName + "/impl").replaceAll("\\.", File.separator);
+        packageDirectory = (dir + File.separator + servicePackageName + "/impl").replace(".", File.separator);
         target = new File(packageDirectory);
         if (!target.exists()) {
             if (!target.mkdirs()) {
