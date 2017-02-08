@@ -33,7 +33,7 @@ public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
         String databaseName = subURI.getPath().substring(1);
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             //String sql = "show tables";
-            String sql = "select * from information.tables where table_schema='"+databaseName+"'";
+            String sql = "select * from information_schema.tables where table_schema='"+databaseName+"'";
             try (Statement stmt = conn.createStatement()) {
                 try (ResultSet tables = stmt.executeQuery(sql)) {
                     while (tables.next()) {
