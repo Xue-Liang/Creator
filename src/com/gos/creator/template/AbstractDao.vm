@@ -40,7 +40,7 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
     private static final RowMapper<${Table.getEntityClassName()}> mapper = new BeanPropertyRowMapper<${Table.getEntityClassName()}>(${Table.getEntityClassName()}.class);
 
 
-    private static final String sql_insert = "insert into ${Table.getName()} (#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end#end)values(#set($counter = 0)#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end?#set($counter=$counter+1)#end#end)";
+    private static final String SQLinsert = "insert into ${Table.getName()} (#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end#end)values(#set($counter = 0)#foreach($field in ${Table.getFields()})#if(${field.getIsAutoIncrement()}==true)#else#if($counter>0),#end?#set($counter=$counter+1)#end#end)";
    /**
     插入一条数据
    @author Xue Liang  on ${Now}
@@ -62,7 +62,7 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         PreparedStatementCreator creator = new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement ps = con.prepareStatement(sql_insert#if($hasAutoIncrement),Statement.RETURN_GENERATED_KEYS#end);
+                PreparedStatement ps = con.prepareStatement(SQLinsert#if($hasAutoIncrement),Statement.RETURN_GENERATED_KEYS#end);
                 for (int i = 0; i < values.length; i++) {
                     ps.setObject(i + 1, values[i]);
                 }
@@ -87,53 +87,55 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         #set($hasAutoIncrement=false)
         #set($autoIncrement="")
 
-                    #foreach($field in ${Table.getFields()})
-                         #if(${field.getIsAutoIncrement()})
-                               #set($hasAutoIncrement=true)
-                               #set($autoIncrement=${field.getEntityPropertyName()})
-                         #else
-                               #set($isPrimaryKey=false)
-                               #foreach($p in ${Table.getPrimaryKey().getKey()})
-                                   #if($p.getTableFieldName()==$field.getTableFieldName())
-                                       #set($isPrimaryKey=true)
-                                   #end
-                               #end
-
-                               #if(false==$isPrimaryKey)
-                                  sql.set("${field.getTableFieldName()}",entity.get$field.getEntityPropertyName()());
-                               #end
-                               #set($counter=$counter+1)
-                         #end
-                    #end
-                    sql.where(" 1=1 ");
-                    #set($counter=0)
-                    #foreach($field in ${Table.getPrimaryKey().getKey()})
-                    sql.and("${field.getTableFieldName()}").eq(entity.get${field.getEntityPropertyName()}());
-                    #end
-
+        #foreach($field in ${Table.getFields()})
+        #if(${field.getIsAutoIncrement()})
+        #set($hasAutoIncrement=true)
+        #set($autoIncrement=${field.getEntityPropertyName()})
+        #else
+        #set($isPrimaryKey=false)
+        #foreach($p in ${Table.getPrimaryKey().getKey()})
+        #if($p.getTableFieldName()==$field.getTableFieldName())
+        #set($isPrimaryKey=true)
+        #end
+        #end
+        #if(false==$isPrimaryKey)
+        sql.set("${field.getTableFieldName()}",entity.get$field.getEntityPropertyName()());
+        #end
+        #set($counter=$counter+1)
+        #end
+        #end
+        sql.where(" 1=1 ");
+        #set($counter=0)
+        #foreach($field in ${Table.getPrimaryKey().getKey()})
+        sql.and("${field.getTableFieldName()}").eq(entity.get${field.getEntityPropertyName()}());
+        #end
         return this.jdbcTemplate.update(sql.toSql(),sql.getParameters().toArray());
     }
 
-    private static final String sql_delete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
+    private static final String SQLdelete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
     /**
     删除一条数据
     @author Xue Liang  on ${Now}
     */
     public int delete(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
-        return this.jdbcTemplate.update(sql_delete,#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end);
+        return this.jdbcTemplate.update(SQLdelete,#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end);
     }
 
     #set($counter=0)
-    private static final String sql_get${Table.getEntityClassName()} ="select #foreach($field in ${Table.getFields()})#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end from ${Table.getName()}  where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
+    private static final String SQLqueryFirst ="select #foreach($field in ${Table.getFields()})#if($counter>0),#end${field.getTableFieldName()}#set($counter=$counter+1)#end from ${Table.getName()}  where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
     /**
     根据主键查询一条数据
     @author Xue Liang  on ${Now}
     */
     public ${Table.getEntityClassName()} queryFirst(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){
         Object[]values = new Object[] {
-            #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getEntityFieldName()} #set($counter=$counter+1)#end
+            #set($counter=0)
+            #foreach($field in ${Table.getPrimaryKey().getKey()})
+            #if($counter>0),#end ${field.getEntityFieldName()}
+            #set($counter=$counter+1)
+            #end
         };
-        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(sql_get${Table.getEntityClassName()},values,mapper);
+        List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(SQLget${Table.getEntityClassName()},values,mapper);
         return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
     }
     /**
