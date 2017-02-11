@@ -47,16 +47,17 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
    */
     public void insert(${Table.getEntityClassName()}  entity){
         final Object[] values = new Object[] {
-    #set($counter=0)
-    #foreach($field in ${Table.getFields()})
-     #if(${field.getIsAutoIncrement()}==true)
-       #set($hasAutoIncrement=true)
-       #set($autoIncrement=${field.getEntityPropertyName()})
-     #else
-     #if($counter>0),#end entity.get${field.getEntityPropertyName()}()
-       #set($counter=$counter+1)
-     #end
-    #end
+        #set($counter=0)
+        #foreach($field in ${Table.getFields()})
+        #if(${field.getIsAutoIncrement()}==true)
+        #set($hasAutoIncrement=true)
+        #set($autoIncrement=${field.getEntityPropertyName()})
+        #else
+        #if($counter>0),#end entity.get${field.getEntityPropertyName()}()
+        #set($counter=$counter+1)
+        #end
+        #end
+
         };
 
         PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -70,12 +71,19 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
 	        }
         };
    #if($hasAutoIncrement==true)
+
         KeyHolder holder = new GeneratedKeyHolder();
+
         this.jdbcTemplate.update(creator,holder);
+
         entity.set${autoIncrement}(holder.getKey().intValue());
+
    #else
+
         this.jdbcTemplate.update(creator);
+
    #end
+
     }
     /**
     修改一条数据
@@ -86,7 +94,6 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         #set($counter=0)
         #set($hasAutoIncrement=false)
         #set($autoIncrement="")
-
         #foreach($field in ${Table.getFields()})
         #if(${field.getIsAutoIncrement()})
         #set($hasAutoIncrement=true)
@@ -99,16 +106,23 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         #end
         #end
         #if(false==$isPrimaryKey)
+
         sql.set("${field.getTableFieldName()}",entity.get$field.getEntityPropertyName()());
+
         #end
         #set($counter=$counter+1)
         #end
         #end
+
         sql.where(" 1=1 ");
+
         #set($counter=0)
         #foreach($field in ${Table.getPrimaryKey().getKey()})
+
         sql.and("${field.getTableFieldName()}").eq(entity.get${field.getEntityPropertyName()}());
+
         #end
+
         return this.jdbcTemplate.update(sql.toSql(),sql.getParameters().toArray());
     }
 
@@ -131,9 +145,12 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         Object[]values = new Object[] {
             #set($counter=0)
             #foreach($field in ${Table.getPrimaryKey().getKey()})
+
             #if($counter>0),#end ${field.getEntityFieldName()}
+
             #set($counter=$counter+1)
             #end
+
         };
         List<${Table.getEntityClassName()}> entities = this.jdbcTemplate.query(SQLget${Table.getEntityClassName()},values,mapper);
         return CollectionUtils.isEmpty(entities) ? null : entities.get(0);
