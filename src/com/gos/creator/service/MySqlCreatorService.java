@@ -9,7 +9,7 @@ import com.gos.creator.domain.DataBase;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public interface MySqlCreatorService {
     public boolean createEntities(DataBase dataBase,String dir,String packageName) throws Exception;

@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public class MySqlMapper {
 

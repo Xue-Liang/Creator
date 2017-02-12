@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author xue
+ * @author Xue Liang
  */
 @SpringBootApplication(scanBasePackages = {"com.gos"})
 public class Starter {

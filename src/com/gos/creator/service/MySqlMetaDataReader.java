@@ -10,7 +10,7 @@ import java.sql.Driver;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public interface MySqlMetaDataReader {
      DataBase read(Driver driver,String url,String user,String password) throws Exception;

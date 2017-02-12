@@ -6,7 +6,7 @@
 package com.gos.creator.domain;
 
 /**
- * @author XueLiang
+ * @author Xue Liang
  */
 public class TableField {
 

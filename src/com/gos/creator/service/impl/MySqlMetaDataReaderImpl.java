@@ -21,7 +21,7 @@ import java.sql.Statement;
 
 /**
  *
- * @author Administrator
+ * @author Xue Liang
  */
 public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
 
