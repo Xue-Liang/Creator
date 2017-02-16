@@ -1,3 +1,4 @@
 # creator
 
-spring jdcb  code creator
+code generator base on spring jdbc.
+
