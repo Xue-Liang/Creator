@@ -9,6 +9,7 @@ package ${DaoPackageName};
        #end
 #end
 import java.util.List;
+import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,7 +18,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.dao.DataAccessException;
 #if($hasAutoIncrement)
 import java.sql.Statement;
 import org.springframework.jdbc.support.KeyHolder;
@@ -35,16 +37,16 @@ import ${DaoPackageName}.SqlBuilder.MySqlBuilder;
 
 public abstract class Abstract${Table.getEntityClassName()}Dao{
     @Resource
-    private JdbcTemplate jdbcTemplate;
+    protected JdbcTemplate jdbcTemplate;
 
-    private static final RowMapper<${Table.getEntityClassName()}> mapper = new BeanPropertyRowMapper<${Table.getEntityClassName()}>(${Table.getEntityClassName()}.class);
+    protected static final RowMapper<${Table.getEntityClassName()}> mapper = new BeanPropertyRowMapper<${Table.getEntityClassName()}>(${Table.getEntityClassName()}.class);
 
-    private static final ResultSetExtractor<Graph> extractor = new ResultSetExtractor<Graph>() {
+    protected static final ResultSetExtractor<${Table.getEntityClassName()} > extractor = new ResultSetExtractor<${Table.getEntityClassName()}>() {
         @Override
         public ${Table.getEntityClassName()} extractData(ResultSet rs) throws SQLException, DataAccessException {
             ${Table.getEntityClassName()} row = new ${Table.getEntityClassName()}();
             #foreach($field in ${Table.getFields()})
-            row.set$filed.getEntityFieldName(rs.get$field.getJavaDataType()($filed.getTableFieldName()));
+            row.set${field.getEntityPropertyName()}(rs.get${field.getJavaDataType()}("${field.getTableFieldName()}"));
             #end
             return row;
         }
