@@ -7,7 +7,10 @@ package com.gos.creator.service.impl;
 
 import com.gos.creator.constance.NormalName;
 import com.gos.creator.domain.DataBase;
+import com.gos.creator.domain.PrimaryKey;
 import com.gos.creator.domain.Table;
+import com.gos.creator.domain.TableField;
+import com.gos.creator.mapper.MySqlMapper;
 import com.gos.creator.service.MySqlCreatorService;
 import com.gos.creator.util.UnderScoreNameParser;
 import com.gos.creator.util.VelocityEngineUtil;
@@ -19,8 +22,10 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
+import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
@@ -80,6 +85,21 @@ public class MySqlCreatorServiceImpl implements MySqlCreatorService {
                 context.put(NormalName.EntityPackageName.getValue(), entityPackageName);
                 context.put(NormalName.DaoPackageName.getValue(), daoPackageName);
                 context.put(NormalName.Table.getValue(), table);
+                PrimaryKey pk = table.getPrimaryKey();
+                if (pk != null) {
+                    List<TableField> keys = pk.getKey();
+                    if (keys != null) {
+                        for (TableField tf : keys) {
+                            if (tf.getIsAutoIncrement()) {
+                                String f = tf.getDataBaseFieldDataType();
+                                f = MySqlMapper.getInstance().toJavaType(f).toLowerCase();
+                                f = "integer".equals(f) ? "int" : ("long".equals(f) ? "long" : "");
+                                context.put(NormalName.AutoIncrementFiledDataBaseDataType.getValue(), f);
+                                break;
+                            }
+                        }
+                    }
+                }
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 context.put(NormalName.Now.getValue(), formatter.format(Calendar.getInstance(Locale.PRC).getTime()));
                 if (template != null)

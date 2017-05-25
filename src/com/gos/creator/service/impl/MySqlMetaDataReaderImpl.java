@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
- *
  * @author Xue Liang
  */
 public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
@@ -33,7 +32,7 @@ public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
         String databaseName = subURI.getPath().substring(1);
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             //String sql = "show tables";
-            String sql = "select * from information_schema.tables where table_schema='"+databaseName+"'";
+            String sql = "select * from information_schema.tables where table_schema='" + databaseName + "'";
             try (Statement stmt = conn.createStatement()) {
                 try (ResultSet tables = stmt.executeQuery(sql)) {
                     while (tables.next()) {
@@ -45,7 +44,7 @@ public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
                         String entityClassName = UnderScoreNameParser.toCamel(tableName, false);
                         table.setEntityClassName(entityClassName);
                         sql = "select * from information_schema.columns where"
-                                +" table_schema='"+databaseName+"' and table_name='"+tableName+"'";
+                                + " table_schema='" + databaseName + "' and table_name='" + tableName + "'";
                         try (Statement descStatment = conn.createStatement()) {
                             try (ResultSet fields = descStatment.executeQuery(sql)) {
                                 while (fields.next()) {
@@ -58,20 +57,27 @@ public class MySqlMetaDataReaderImpl implements MySqlMetaDataReader {
 
                                     String entityPropertyName = UnderScoreNameParser.toCamel(name, false);
                                     field.setEntityPropertyName(entityPropertyName);
-                                    
+
                                     String entityFieldName = UnderScoreNameParser.toCamel(name, true);
                                     field.setEntityFieldName(entityFieldName);
-                                    
+
                                     String type = fields.getString("DATA_TYPE").toLowerCase();
-                                    type = MySqlMapper.getInstance().toJavaType(type);
-                                    field.setJavaDataType(type);
-                                    
+
+                                    String cleanerJdbcType = MySqlMapper.getInstance().getJdbcType(type);
+                                    field.setDataBaseFieldDataType(cleanerJdbcType);
+
+                                    String javaType = MySqlMapper.getInstance().toJavaType(type);
+                                    field.setJavaDataType(javaType);
+
+                                    String resultSetMethodName = MySqlMapper.getInstance().getResultSetMethodName(type);
+                                    field.setResultSetMethodName(resultSetMethodName);
+
                                     boolean isNull = "YES".equals(fields.getString("IS_NULLABLE").toUpperCase());
                                     field.setIsNull(isNull);
-                                    
-                                    Boolean isAutoIncrement ="AUTO_INCREMENT".equals(fields.getString("EXTRA").toUpperCase());
+
+                                    Boolean isAutoIncrement = "AUTO_INCREMENT".equals(fields.getString("EXTRA").toUpperCase());
                                     field.setIsAutoIncrement(isAutoIncrement);
-                                    
+
                                     boolean isKey = "PRI".equals(fields.getString("COLUMN_KEY").toUpperCase());
                                     if (isKey) {
                                         table.addPrimaryKey(field);

@@ -12,25 +12,31 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
- *
  * @author Xue Liang
  */
 public class MySqlMapper {
 
-    private static PropertyResourceBundle bundle = null;
+    private static PropertyResourceBundle MySqlDataTypeMapper = null;
+
+    private static PropertyResourceBundle ResultSetMethodMapper = null;
 
     private static Pattern pattern = Pattern.compile("([a-zA-Z0-9_-]+)");
 
     static {
         try {
-            bundle = new PropertyResourceBundle(MySqlMapper.class.getResourceAsStream("MySqlMapper.properties"));
+            MySqlDataTypeMapper = new PropertyResourceBundle(MySqlMapper.class.getResourceAsStream("MySqlDataTypeMapper.properties"));
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "没有找到" + MySqlMapper.class.getPackage() + ".MySqlMapper.properties");
+        }
+
+        try {
+            ResultSetMethodMapper = new PropertyResourceBundle(MySqlMapper.class.getResourceAsStream("ResultSetMethodMapper.properties"));
+        } catch (IOException ex) {
         }
     }
 
     private MySqlMapper() {
     }
+
     private static final MySqlMapper mapper = new MySqlMapper();
 
     public static MySqlMapper getInstance() {
@@ -50,6 +56,28 @@ public class MySqlMapper {
                 jdbcType = matcher.group(1).toLowerCase();
             }
         }
-        return bundle == null ? "" : bundle.getString(jdbcType);
+        return MySqlDataTypeMapper == null ? "" : MySqlDataTypeMapper.getString(jdbcType);
     }
+
+    public String getJdbcType(String jdbcType) {
+        if (jdbcType != null) {
+            Matcher matcher = pattern.matcher(jdbcType);
+            if (matcher.find()) {
+                return jdbcType = matcher.group(1).toLowerCase();
+            }
+        }
+        return "";
+    }
+
+    public String getResultSetMethodName(String jdbcType) {
+        if (jdbcType != null) {
+            Matcher matcher = pattern.matcher(jdbcType);
+            if (matcher.find()) {
+                jdbcType = matcher.group(1).toLowerCase();
+            }
+        }
+        return ResultSetMethodMapper == null ? "" : ResultSetMethodMapper.getString(jdbcType);
+    }
+
+
 }

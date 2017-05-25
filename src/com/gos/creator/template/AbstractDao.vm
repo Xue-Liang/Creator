@@ -46,7 +46,7 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
         public ${Table.getEntityClassName()} extractData(ResultSet rs) throws SQLException, DataAccessException {
             ${Table.getEntityClassName()} row = new ${Table.getEntityClassName()}();
             #foreach($field in ${Table.getFields()})
-            row.set${field.getEntityPropertyName()}(rs.get${field.getJavaDataType()}("${field.getTableFieldName()}"));
+            row.set${field.getEntityPropertyName()}(rs.${field.getResultSetMethodName()}("${field.getTableFieldName()}"));
             #end
             return row;
         }
@@ -88,7 +88,7 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
 
         this.jdbcTemplate.update(creator,holder);
 
-        entity.set${autoIncrement}(holder.getKey().intValue());
+        entity.set${autoIncrement}(holder.getKey().${AutoIncrementFiledDataBaseDataType}Value());
 
    #else
 
@@ -139,8 +139,8 @@ public abstract class Abstract${Table.getEntityClassName()}Dao{
     }
 
     private static final String delete="delete from ${Table.getName()} where #set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0) and #end${field.getTableFieldName()}=? #set($counter=$counter+1)#end";
-    /*
-    删除一条数据
+    /**
+    根据主键删除一条数据
     @author Xue Liang  on ${Now}
     */
     public int delete(#set($counter=0)#foreach($field in ${Table.getPrimaryKey().getKey()}) #if($counter>0),#end ${field.getJavaDataType()} ${field.getEntityFieldName()} #set($counter=$counter+1)#end){

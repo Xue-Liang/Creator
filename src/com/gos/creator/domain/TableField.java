@@ -13,7 +13,18 @@ public class TableField {
     private String tableFieldName;
     private String entityFieldName;
     private String entityPropertyName;
+
+    public String getDataBaseFieldDataType() {
+        return dataBaseFieldDataType;
+    }
+
+    public void setDataBaseFieldDataType(String dataBaseFieldDataType) {
+        this.dataBaseFieldDataType = dataBaseFieldDataType;
+    }
+
+    private String dataBaseFieldDataType;
     private String javaDataType;
+    private String resultSetMethodName;
     private Boolean isNull;
     private Boolean isAutoIncrement;
     private String description;
@@ -48,6 +59,14 @@ public class TableField {
 
     public void setJavaDataType(String javaDataType) {
         this.javaDataType = javaDataType;
+    }
+
+    public String getResultSetMethodName() {
+        return this.resultSetMethodName;
+    }
+
+    public void setResultSetMethodName(String name) {
+        this.resultSetMethodName = name;
     }
 
     public void setIsNull(boolean isNull) {
