@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gos.creator;
+package com.gos;
 
-import com.gos.creator.domain.DataBase;
-import com.gos.creator.service.MySqlCreatorService;
-import com.gos.creator.service.MySqlMetaDataReader;
-import com.gos.creator.service.impl.MySqlCreatorServiceImpl;
-import com.gos.creator.service.impl.MySqlMetaDataReaderImpl;
+import com.gos.database.creator.domain.DataBase;
+import com.gos.database.creator.service.MySqlCreatorService;
+import com.gos.database.creator.service.MySqlMetaDataReader;
+import com.gos.database.creator.service.impl.MySqlCreatorServiceImpl;
+import com.gos.database.creator.service.impl.MySqlMetaDataReaderImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URI;
 import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
